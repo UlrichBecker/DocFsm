@@ -240,19 +240,19 @@ docfsm -h
 ```
 ```
 DocFsm is a documentation and reverse engineering tool for graphical presentation of
-finite state machines (FSM) from C and/or C++ source-files.
+finite state machines (FSM) from C and/or C++ sourcefiles.
 
 It translates C/C++ sourcefiles containing a FSM - respectively containing
 for the FSM defined macros - into the DOT-language.
 
 (c) 2017 Ulrich Becker
 
-Usage: docfsm [options,...] <C/C++ sourefile [C/C++ sourcefile ...]>
+Usage: docfsm [options,...] <C/C++ sourcefile [C/C++ sourcefile ...]>
 
-Example 1: Creating a dot-file from a C sourefile:
+Example 1: Creating a dot-file from a C sourcefile:
 docfsm myFsm.c > myFsm.gv
 
-Example 2: Creating a PDF from a C++11 sourefile with blue and thick transitions:
+Example 2: Creating a PDF from a C++11 sourcefile with blue and thick transitions:
 docfsm -E style=bold -E color=blue --std c++11 -I /path/to/my/additional/headers myFsm.cpp | dot -Tpdf -o myFsm.pdf
 
 Options:
@@ -277,8 +277,8 @@ Options:
         E.g.: -d FSM_MY_DECLARE_STATE -d FSM_MY_DECLARE_STATE_X ...
 
 -i <PARAM>, --init <PARAM>
-        Overwrites the list of state initialization keywords by the in PARAM given keyword.                                      
-        NOTE: For each new keyword use a separate option-label.                                                                  
+        Overwrites the list of state initialization keywords by the in PARAM given keyword.
+        NOTE: For each new keyword use a separate option-label.
         E.g.: -i FSM_MY_DECLARE_STATE -i FSM_MY_DECLARE_STATE_X ...
 
 -c <PARAM>, --call <PARAM>
