@@ -33,17 +33,17 @@ CommandlineParser::OptPrintHelp::OptPrintHelp( void )
 int CommandlineParser::OptPrintHelp::onGiven( PARSER* poParser )
 {
    std::cout << "\nDocFsm is a documentation and reverse engineering tool for graphical presentation of\n"
-                "finite state machines (FSM) from C and/or C++ source-files.\n\n";
+                "finite state machines (FSM) from C and/or C++ sourcefiles.\n\n";
    std::cout << "It translates C/C++ sourcefiles containing a FSM - respectively containing\n"
                 "for the FSM defined macros - into the DOT-language.\n\n";
    std::cout << "(c) 2017 Ulrich Becker\n\n"; 
-   std::cout << "Usage: " << poParser->getProgramName() << " [options,...] <C/C++ sourefile [C/C++ sourcefile ...]>\n\n";
+   std::cout << "Usage: " << poParser->getProgramName() << " [options,...] <C/C++ sourcefile [C/C++ sourcefile ...]>\n\n";
 
-   std::cout << "Example 1: Creating a dot-file from a C sourefile:\n";
+   std::cout << "Example 1: Creating a dot-file from a C sourcefile:\n";
    std::cout << poParser->getProgramName() <<
                 " myFsm.c > myFsm.gv\n\n";
 
-   std::cout << "Example 2: Creating a PDF from a C++11 sourefile with blue and thick transitions:\n";
+   std::cout << "Example 2: Creating a PDF from a C++11 sourcefile with blue and thick transitions:\n";
    std::cout << poParser->getProgramName() <<
                 " -E style=bold -E color=blue"
                 " --std c++11 -I /path/to/my/additional/headers myFsm.cpp"
