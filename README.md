@@ -362,5 +362,6 @@ Options:
 ```
 TODO
 ----
+- Grouping (Keyword GROUP) doesn't operate correctly yet!
 - Presentation of sub-FSMs
 - Make DocFsm also compilable for MS-Windows and Mac-OS.
