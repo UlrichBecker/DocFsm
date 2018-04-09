@@ -1,0 +1,26 @@
+digraph G
+{
+   rankdir=LR;
+   node [shape=box];
+   size="8,0";
+   subgraph cluster_0
+   {
+      label = "DocFsm intern";
+      style=filled;
+      color=lightgrey;
+      node [style=filled, color=cyan];
+      cppCaller [label="Preprocessor-\ncaller"];
+      preparser [label="Preparser"]
+      stateCollector [label="State-\ncollector"];
+      transitionFinder [label="Transition-\nfinder"];
+      dotGenerator [label="DOT-\nGenerator"];
+      cppCaller -> preparser -> stateCollector -> transitionFinder -> dotGenerator;
+   }
+   start -> cppCaller;
+   preprocessor [label="C/C++ Preprocessor\nDefault: /usr/bin/cpp"]
+   cppCaller -> preprocessor;
+   preprocessor -> cppCaller
+   dotGenerator -> output;
+   start [shape=plaintext, label="C/C++ Sourcefile(s)"];
+   output [shape=plaintext, label="Standard out stream\nDOT-format"];
+}
