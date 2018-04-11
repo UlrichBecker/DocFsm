@@ -226,7 +226,7 @@ int StateCollector::MODULE::splitInClusters( void )
       maxFsmNumber++;
       for( auto& i : pOriginFsm->getStateList() )
       {
-         if( i->m_fsmNumber != 0 )
+         if( i->getFsmNumber() != 0 )
             continue;
          i->setFsm( maxFsmNumber );
          break;
@@ -235,7 +235,7 @@ int StateCollector::MODULE::splitInClusters( void )
       for( auto& i : pOriginFsm->getStateList() )
       {
          i->obtainFsmNumberIfEqual( maxFsmNumber );
-         if( i->m_fsmNumber == 0 )
+         if( i->getFsmNumber() == 0 )
             inFsm = false;
       }
    }
@@ -246,7 +246,7 @@ int StateCollector::MODULE::splitInClusters( void )
       FSM* pNewFsm = nullptr;
       for( auto it = pOriginFsm->getStateList().begin(); it != pOriginFsm->getStateList().end(); )
       {
-         if( ((*it)->m_fsmNumber == fsm) )
+         if( ((*it)->getFsmNumber() == fsm) )
          {
             if( pNewFsm == nullptr )
             {
@@ -418,6 +418,26 @@ int StateCollector::SetNoFsmGroups::onGiven( CLOP::PARSER* poParser )
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+/*!----------------------------------------------------------------------------
+*/
+StateCollector::SetNoTransitions::SetNoTransitions( StateCollector* pParent )
+   :Option( pParent )
+{
+   m_hasArg    = NO_ARG;
+   m_shortOpt  = 'T';
+   m_longOpt   = "notransitions";
+   m_helpText  = "Print states only, no transitions.";
+}
+
+/*!----------------------------------------------------------------------------
+*/
+int StateCollector::SetNoTransitions::onGiven( CLOP::PARSER* poParser )
+{
+   m_pParent->m_noTransitions = true;
+   return 0;
+}
+
+///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 const std::string StateCollector::c_strLabel = "label = ";
 
@@ -434,11 +454,13 @@ StateCollector::StateCollector( SourceBrowser& rSourceBrowser,
    ,m_setSingleGraph( this )
    ,m_setNoStateGroups( this )
    ,m_setNoFsmGroups( this )
+   ,m_setNoTransitions( this )
    ,m_rKeywords( rKeywords )
    ,m_parseArgument( false )
    ,m_isSingle( false )
    ,m_noStateGroups( false )
    ,m_noFsmGroups( false )
+   ,m_noTransitions( false )
    ,m_entryCount( 0 )
 {
    rCommandLine( m_setGraphAttributes )
@@ -446,7 +468,8 @@ StateCollector::StateCollector( SourceBrowser& rSourceBrowser,
                ( m_setEdgeAttributes )
                ( m_setSingleGraph )
                ( m_setNoStateGroups )
-               ( m_setNoFsmGroups );
+               ( m_setNoFsmGroups )
+               ( m_setNoTransitions );
    m_pLabelAttribute = DotKeywords::findNodeWord( "label" );
    assert( m_pLabelAttribute != nullptr );
 }
@@ -568,7 +591,7 @@ bool StateCollector::prepareEntryPoint( StateGraph* poTargetStade )
       return true;
    m_entryCount++;
    TransitionGraph* pTransitionGraph = new TransitionGraph( poTargetStade );
-   poStade->m_vpTransitions.push_back( pTransitionGraph );
+   poStade->addTransition( pTransitionGraph );
 
 #ifdef CONFIG_POINT_AS_ENTRY_EXIT_STATE
    poStade->addAttribute( "shape", "point" );
@@ -580,7 +603,7 @@ bool StateCollector::prepareEntryPoint( StateGraph* poTargetStade )
 #endif
    m_oAttributeReader.start( getSourceBrowser(),
                              DotKeywords::c_edgeAttributes,
-                             pTransitionGraph->m_vpAttributes );
+                             pTransitionGraph->getAttrList() );
    return false;
 }
 
@@ -590,7 +613,7 @@ bool StateCollector::readStateAttributes( StateGraph* poTargetStade )
 {
    m_oAttributeReader.start( getSourceBrowser(),
                              DotKeywords::c_nodeAttributes,
-                             poTargetStade->m_vpAttributes );
+                             poTargetStade->getAttrList() );
    return false;
 }
 
@@ -600,7 +623,7 @@ StateGraph* StateCollector::find( const std::string& name )
 {
    for( auto& pState : get() )
    {
-      if( pState->m_name == name )
+      if( pState->getName() == name )
          return pState;
    }
    return nullptr;

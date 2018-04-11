@@ -157,7 +157,7 @@ bool TransitionFinder::handleBraceCount( void )
       {
          assert( dynamic_cast<StateGraph*>(m_pStateGraph) != nullptr);
          ERROR_MESSAGE( "Missing \'{\' whithin state \""
-                        << m_pStateGraph->m_name
+                        << m_pStateGraph->getName()
                         << "\nLastchar: " << m_lastEffectiveChar );
       }
 #if 1
@@ -173,10 +173,10 @@ bool TransitionFinder::handleBraceCount( void )
 
 /*!----------------------------------------------------------------------------
 */
-const ATTR_T* TransitionFinder::findAttribute( const TransitionGraph& rTransition,
+const ATTR_T* TransitionFinder::findAttribute(  TransitionGraph& rTransition,
                                          const DotKeywords::ID_T id )
 {
-   for( auto& pAttr : rTransition.m_vpAttributes )
+   for( auto& pAttr : rTransition.getAttrList() )
    {
       if( DotKeywords::getId(pAttr->first) == id )
          return pAttr;
@@ -212,7 +212,7 @@ void TransitionFinder::mergeAttributes( TransitionGraph& rPresent )
    }
    else
    {
-      rPresent.m_vpAttributes.push_back( new ATTR_T( pCurrentAttr->first,
+      rPresent.getAttrList().push_back( new ATTR_T( pCurrentAttr->first,
                                              new std::string( *pCurrentAttr->second ) ));
    }
 }
@@ -229,10 +229,10 @@ bool TransitionFinder::addTransition( void )
 
    if( !m_oOptionNoMerge() )
    {
-      for( auto& pTransition : m_pStateGraph->m_vpTransitions )
+      for( auto& pTransition : m_pStateGraph->getTransitionList() )
       {
-         if( pTransition->m_pTargetState->m_name != 
-             m_pCurrentTransition->m_pTargetState->m_name )
+         if( pTransition->getTargetState()->getName() != 
+             m_pCurrentTransition->getTargetState()->getName() )
             continue;
          mergeAttributes( *pTransition );
          delete m_pCurrentTransition;
@@ -241,7 +241,7 @@ bool TransitionFinder::addTransition( void )
       }
    }
 
-   m_pStateGraph->m_vpTransitions.push_back( m_pCurrentTransition );
+   m_pStateGraph->addTransition( m_pCurrentTransition );
    m_pCurrentTransition = nullptr;
    return true;
 }
@@ -416,7 +416,7 @@ void TransitionFinder::fsmStep( EVENT_T event )
             {
                if( generateExitState() )
                {
-                  startAttributeReaderTransition( m_pCurrentTransition->m_vpAttributes );
+                  startAttributeReaderTransition( m_pCurrentTransition->getAttrList() );
                   FSM_TRANSITION( INSIDE_STATE );
                }
                  // FSM_TRANSITION( READ_ATTRIBUTES, label='Is return-keyword' );
@@ -469,7 +469,7 @@ void TransitionFinder::fsmStep( EVENT_T event )
 
          if( isThisCharActual(',') )
          {
-            startAttributeReaderTransition( m_pCurrentTransition->m_vpAttributes );
+            startAttributeReaderTransition( m_pCurrentTransition->getAttrList() );
             FSM_TRANSITION( INSIDE_STATE );
             break;
          }

@@ -139,12 +139,20 @@ class StateCollector: public KeywordInterpreter
       int onGiven( CLOP::PARSER* poParser ) override;
    };
 
+   class SetNoTransitions: public Option
+   {
+   public:
+      SetNoTransitions( StateCollector* );
+      int onGiven( CLOP::PARSER* poParser ) override;
+   };
+
    SetGraphAttributes                  m_setGraphAttributes;
    SetNodeAttributes                   m_setNodeAttributes;
    SetEdgeAttributes                   m_setEdgeAttributes;
    SetSingleGraph                      m_setSingleGraph;
    SetNoStateGroups                    m_setNoStateGroups;
    SetNoFsmGroups                      m_setNoFsmGroups;
+   SetNoTransitions                    m_setNoTransitions;
    ATTR_LIST_T                         m_vpGraphAttributes;
    ATTR_LIST_T                         m_vpNodeAttributes;
    ATTR_LIST_T                         m_vpEdgeAttributes;
@@ -154,6 +162,7 @@ class StateCollector: public KeywordInterpreter
    bool                                m_isSingle;
    bool                                m_noStateGroups;
    bool                                m_noFsmGroups;
+   bool                                m_noTransitions;
    int                                 m_entryCount;
    MODULE_V                            m_vpModules;
    AttributeReader                     m_oAttributeReader;
@@ -216,6 +225,8 @@ public:
    {
       return m_pLabelAttribute;
    }
+
+   bool noTransitions( void ) const { return m_noTransitions; }
 
    StateGraph* addIfNotAlreadyDone( const std::string& rWord );
 

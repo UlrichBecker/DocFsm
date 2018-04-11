@@ -57,16 +57,33 @@ void StateGraph::print( std::ostream& rOut, const int tabs )
       printAttr( rOut, m_vpAttributes );
       rOut << ";\n";
    }
+
+   if( m_pParent->noTransitions() )
+      return;
+
+#ifdef CONFIG_PRINT_CALLER_LIST
+   for( auto& pCaller : m_vpCallerList )
+   {
+      StateCollector::printTabs( rOut, tabs );
+      pCaller->getState()->printName( rOut );
+      rOut << " -> ";
+      printName( rOut );
+      if( !pCaller->getTransition()->getAttrList().empty() )
+         printAttr( rOut, pCaller->getTransition()->getAttrList() );
+      rOut << ";\n";
+   }
+#else
    for( auto& pTransition : m_vpTransitions )
    {
       StateCollector::printTabs( rOut, tabs );
       printName( rOut );
       rOut << " -> ";
-      pTransition->m_pTargetState->printName( rOut );
-      if( !pTransition->m_vpAttributes.empty() )
-         printAttr( rOut, pTransition->m_vpAttributes );
+      pTransition->getTargetState()->printName( rOut );
+      if( !pTransition->getAttrList().empty() )
+         printAttr( rOut, pTransition->getAttrList() );
       rOut << ";\n";
    }
+#endif
 }
 
 /*!----------------------------------------------------------------------------
@@ -101,7 +118,7 @@ StateGraph::~StateGraph( void )
    DEBUG_MESSAGE( "Destructor of \"" << m_name << "\"" );
    for( auto& pTransition : m_vpTransitions )
    {
-      for( auto& pAttribute : pTransition->m_vpAttributes )
+      for( auto& pAttribute : pTransition->getAttrList() )
       {
          if( pAttribute->second != nullptr )
             delete pAttribute->second;
@@ -109,6 +126,10 @@ StateGraph::~StateGraph( void )
       }
       delete pTransition;
    }
+#ifdef CONFIG_PRINT_CALLER_LIST
+   for( auto& pCaller : m_vpCallerList )
+      delete pCaller;
+#endif
 }
 
 /*!----------------------------------------------------------------------------
@@ -134,7 +155,7 @@ void StateGraph::setFsm( int fsmNumber )
        DEBUG_MESSAGE( "Set fsmNumber-number " << fsmNumber << " for " << m_name );
        m_fsmNumber = fsmNumber;
        for( auto& pTransition : m_vpTransitions )
-          pTransition->m_pTargetState->setFsm( fsmNumber );
+          pTransition->getTargetState()->setFsm( fsmNumber );
     }
 }
 
@@ -156,11 +177,11 @@ bool StateGraph::_obtainFsmNumberIfEqual( int fsmNumber )
     bool ret = false;
     for( auto& pTransition : m_vpTransitions )
     {
-       assert( dynamic_cast<StateGraph*>(pTransition->m_pTargetState) != nullptr );
+       assert( dynamic_cast<StateGraph*>(pTransition->getTargetState()) != nullptr );
        DEBUG_MESSAGE( "Name " << m_name );
-       if( pTransition->m_pTargetState == this )
+       if( pTransition->getTargetState() == this )
            continue;
-       if( pTransition->m_pTargetState->_obtainFsmNumberIfEqual( fsmNumber ) )
+       if( pTransition->getTargetState()->_obtainFsmNumberIfEqual( fsmNumber ) )
        {
           DEBUG_MESSAGE( "obtain fsmNumber-number " << fsmNumber << " for " << m_name );
           m_fsmNumber = fsmNumber;
@@ -171,13 +192,13 @@ bool StateGraph::_obtainFsmNumberIfEqual( int fsmNumber )
         return ret;
     for( auto& pTransition : m_vpTransitions )
     {
-       if( pTransition->m_pTargetState == this )
+       if( pTransition->getTargetState() == this )
           continue;
-       if( pTransition->m_pTargetState->m_fsmNumber == 0 )
+       if( pTransition->getTargetState()->m_fsmNumber == 0 )
        {
           DEBUG_MESSAGE( "set fsmNumber-number " << m_fsmNumber << " from " <<
-                          m_name << " to " << pTransition->m_pTargetState->m_name );
-          pTransition->m_pTargetState->m_fsmNumber = m_fsmNumber;
+                          m_name << " to " << pTransition->getTargetState()->m_name );
+          pTransition->getTargetState()->m_fsmNumber = m_fsmNumber;
        }
     }
     return ret;

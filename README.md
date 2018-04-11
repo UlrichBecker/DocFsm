@@ -370,6 +370,9 @@ Options:
 -f, --nofsmgroups
         No split in FSM-groups, when unconnected states detected.
 
+-T, --notransitions
+        Print states only, no transitions.
+
 -n, --nomerge
         Do not merge transitions with the same target in the same state.
 

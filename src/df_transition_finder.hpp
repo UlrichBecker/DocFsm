@@ -94,7 +94,7 @@ protected:
 private:
    void fsmStep( EVENT_T );
    bool handleBraceCount( void );
-   static const ATTR_T* findAttribute( const TransitionGraph&, const DotKeywords::ID_T );
+   static const ATTR_T* findAttribute(  TransitionGraph&, const DotKeywords::ID_T );
    void mergeAttributes( TransitionGraph& );
    bool addTransition( void );
    void startAttributeReaderTransition( ATTR_LIST_T& rAttrList );

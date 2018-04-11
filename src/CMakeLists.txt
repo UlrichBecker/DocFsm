@@ -31,6 +31,7 @@ project( ${PROJECT_NAME} )
 
 
 add_definitions( "-I${CMAKE_CURRENT_SOURCE_DIR}" )
+#add_definitions( "-DCONFIG_PRINT_CALLER_LIST" )
 add_definitions( "-DCONFIG_CLOP_NO_OPTIONAL_ARG" )
 add_definitions( "-DCONFIG_POINT_AS_ENTRY_EXIT_STATE" )
 add_definitions( "-D__DOCFSM_VERSION__=${DOCFSM_VERSION}" )

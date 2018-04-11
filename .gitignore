@@ -16,5 +16,7 @@ src/CMakeFiles
 src/cmake_install.cmake
 src/install_manifest.txt
 src/testFsm.c
+src/test.cpp
+src/test.hpp
 examples/.directory
 examples/general/.directory
