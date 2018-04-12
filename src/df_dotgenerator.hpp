@@ -65,7 +65,7 @@ public:
 #endif
 
    typedef std::vector<TransitionGraph*> TRANSITION_LIST_T;
-   
+
 private:
    StateCollector*               m_pParent;
    int                           m_fsmNumber;
@@ -88,8 +88,8 @@ public:
    {}
    ~StateGraph( void );
 
-
-   void print( std::ostream&, const int=0 );
+   void printState( std::ostream&, const int=0 );
+   void printTransitions( std::ostream&, const int=0 );
    static void printAttr( std::ostream& rOut, const ATTR_LIST_T& );
    void addAttribute( const std::string& rKey, const std::string& rValue );
    void addClusterNumber( int n );

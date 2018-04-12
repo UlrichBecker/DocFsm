@@ -48,16 +48,21 @@ void StateGraph::printName( std::ostream& rOut )
 
 /*!----------------------------------------------------------------------------
 */
-void StateGraph::print( std::ostream& rOut, const int tabs )
+void StateGraph::printState( std::ostream& rOut, const int tabs )
 {
-   if( !m_vpAttributes.empty() )
-   {
-      StateCollector::printTabs( rOut, tabs );
-      printName( rOut );
-      printAttr( rOut, m_vpAttributes );
-      rOut << ";\n";
-   }
+   StateCollector::printTabs( rOut, tabs );
+   printName( rOut );
 
+   if( !m_vpAttributes.empty() )
+      printAttr( rOut, m_vpAttributes );
+
+   rOut << ";\n";
+}
+
+/*!----------------------------------------------------------------------------
+*/
+void StateGraph::printTransitions( std::ostream& rOut, const int tabs )
+{
    if( m_pParent->noTransitions() )
       return;
 
@@ -85,6 +90,7 @@ void StateGraph::print( std::ostream& rOut, const int tabs )
    }
 #endif
 }
+
 
 /*!----------------------------------------------------------------------------
 */

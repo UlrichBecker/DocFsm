@@ -33,12 +33,13 @@ class StateCollector: public KeywordInterpreter
 
    struct GROUP
    {
-      STATES              m_vpStates;
+      STATES        m_vpStates;
       std::string*  m_pName;
 
       GROUP( std::string* pName = nullptr );
       ~GROUP( void );
-      void print( std::ostream& rOut, int tabs );
+      void printStates( std::ostream& rOut, int tabs );
+      void printTransitions( std::ostream& rOut, int tabs );
       bool haveName( void );
       const std::string& getName( void ) const
       {

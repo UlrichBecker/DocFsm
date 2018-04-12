@@ -76,11 +76,20 @@ void StateCollector::GROUP::addStatePtrIfNotAlreadyContaining( StateGraph* pStat
 
 /*!----------------------------------------------------------------------------
 */
-void StateCollector::GROUP::print( std::ostream& rOut, int tabs )
+void StateCollector::GROUP::printStates( std::ostream& rOut, int tabs )
 {
    for( auto& pStates : m_vpStates )
-       pStates->print( rOut, tabs );
+      pStates->printState( rOut, tabs );
 }
+
+/*!----------------------------------------------------------------------------
+*/
+void StateCollector::GROUP::printTransitions( std::ostream& rOut, int tabs )
+{
+   for( auto& pStates : m_vpStates )
+      pStates->printTransitions( rOut, tabs );
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 /*!----------------------------------------------------------------------------
@@ -162,7 +171,7 @@ void StateCollector::FSM::print( std::ostream& rOut,
          printTabs( rOut, tabs );
          rOut << c_strLabel << pGroup->getName() << "\n";
       }
-      pGroup->print( rOut, tabs );
+      pGroup->printStates( rOut, tabs );
       if( pGroup->haveName() )
       {
          tabs--;
@@ -171,6 +180,9 @@ void StateCollector::FSM::print( std::ostream& rOut,
          groupNum++;
       }
    }
+
+   for( auto& pGroup : m_vpGroups )
+      pGroup->printTransitions( rOut, tabs );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -621,11 +633,13 @@ bool StateCollector::readStateAttributes( StateGraph* poTargetStade )
 */
 StateGraph* StateCollector::find( const std::string& name )
 {
-   for( auto& pState : get() )
-   {
-      if( pState->getName() == name )
-         return pState;
-   }
+   for( auto& pModul: m_vpModules )
+      for( auto& pFsm: pModul->m_vpFsm )
+         for( auto& pGroup: pFsm->m_vpGroups )
+            for( auto& pState: pGroup->m_vpStates )
+               if( pState->getName() == name )
+                  return pState;
+
    return nullptr;
 }
 

@@ -391,6 +391,8 @@ Options:
 ```
 TODO
 ----
-- Grouping (Keyword GROUP) doesn't operate correctly yet!
-- Presentation of sub-FSMs
-- Make DocFsm also compilable for MS-Windows and Mac-OS.
+- Macro to defining group-attributes.
+- Option for no printing of transition-labels.
+- Update-mode for grafik-level debugging of FSMs (version 2.X).
+- Presentation of sub-FSMs.
+- DocFsm also compilable for MS-Windows and Mac-OS.
