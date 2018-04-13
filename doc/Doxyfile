@@ -743,7 +743,36 @@ WARN_LOGFILE           = warning.log
 # spaces.
 # Note: If this tag is empty the current directory is searched.
 
-INPUT                  = ../src
+INPUT                  = ../src/df_preparser.cpp
+INPUT                 += ../src/df_preparser.hpp
+INPUT                 += ../src/df_keyword_pool.cpp
+INPUT                 += ../src/df_keyword_pool.hpp
+INPUT                 += ../src/os_execute.cpp
+INPUT                 += ../src/os_execute.hpp
+INPUT                 += ../src/os_execute_linux.cpp
+INPUT                 += ../src/os_execute_linux.hpp
+INPUT                 += ../src/df_cpp_caller.cpp
+INPUT                 += ../src/df_cpp_caller.hpp
+INPUT                 += ../src/df_transition_finder.cpp
+INPUT                 += ../src/df_transition_finder.hpp
+INPUT                 += ../src/df_dotgenerator.cpp
+INPUT                 += ../src/df_dotgenerator.hpp
+INPUT                 += ../src/df_keyword.cpp
+INPUT                 += ../src/df_keyword.hpp
+INPUT                 += ../src/df_attribute_reader.cpp
+INPUT                 += ../src/df_attribute_reader.hpp
+INPUT                 += ../src/parse_opts.cpp
+INPUT                 += ../src/parse_opts.hpp
+INPUT                 += ../src/df_commandline.cpp
+INPUT                 += ../src/df_commandline.hpp
+INPUT                 += ../src/df_state_collector.cpp
+INPUT                 += ../src/df_state_collector.hpp
+INPUT                 += ../src/df_dot_keywords.cpp
+INPUT                 += ../src/df_dot_keywords.hpp
+INPUT                 += ../src/df_docfsm.cpp
+INPUT                 += ../src/df_docfsm.hpp
+INPUT                 += ../src/fsm_class_implementer.hpp
+INPUT                 += ../src/fsmhelper.hpp
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses
