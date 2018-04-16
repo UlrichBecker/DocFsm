@@ -376,6 +376,10 @@ Options:
 -O, --noTrLabel
         Omit printing of transition text-labels.
 
+-L, --trTooltip
+        Generates a tool-tip attribute for each transition from
+        a given transition label-text.
+
 -n, --nomerge
         Do not merge transitions with the same target in the same state.
 
