@@ -470,6 +470,28 @@ int StateCollector::SetNoTransitionLabel::onGiven( CLOP::PARSER* poParser )
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+/*!----------------------------------------------------------------------------
+*/
+StateCollector::SetGenerateTransitionTooltip::SetGenerateTransitionTooltip
+   ( StateCollector* pParent )
+   :Option( pParent )
+{
+   m_hasArg    = NO_ARG;
+   m_shortOpt  = 'L';
+   m_longOpt   = "trTooltip";
+   m_helpText  = "Generates a tool-tip attribute for each transition from\n"
+                 "a given transition label-text.";
+}
+
+/*!----------------------------------------------------------------------------
+*/
+int StateCollector::SetGenerateTransitionTooltip::onGiven( CLOP::PARSER* poParser )
+{
+   m_pParent->m_generateTransitionTooltips = true;
+   return 0;
+}
+
+///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 const std::string StateCollector::c_strLabel = "label = ";
 
@@ -488,6 +510,7 @@ StateCollector::StateCollector( SourceBrowser& rSourceBrowser,
    ,m_setNoFsmGroups( this )
    ,m_setNoTransitions( this )
    ,m_setNoTransitionLabel( this )
+   ,m_setTransitionToolTip( this )
    ,m_rKeywords( rKeywords )
    ,m_parseArgument( false )
    ,m_isSingle( false )
@@ -495,6 +518,7 @@ StateCollector::StateCollector( SourceBrowser& rSourceBrowser,
    ,m_noFsmGroups( false )
    ,m_noTransitions( false )
    ,m_noTransitionLabels( false )
+   ,m_generateTransitionTooltips( false )
    ,m_entryCount( 0 )
 {
    rCommandLine( m_setGraphAttributes )
@@ -504,7 +528,8 @@ StateCollector::StateCollector( SourceBrowser& rSourceBrowser,
                ( m_setNoStateGroups )
                ( m_setNoFsmGroups )
                ( m_setNoTransitions )
-               ( m_setNoTransitionLabel );
+               ( m_setNoTransitionLabel )
+               ( m_setTransitionToolTip );
    m_pLabelAttribute = DotKeywords::findNodeWord( "label" );
    assert( m_pLabelAttribute != nullptr );
 }
@@ -792,6 +817,20 @@ void StateCollector::splitInGroups( void )
 
    for( auto& pModule : m_vpModules )
       pModule->splitInGroups();
+}
+
+/*!----------------------------------------------------------------------------
+*/
+void StateCollector::generateTooltipFromLabel( void )
+{
+   if( !m_generateTransitionTooltips )
+      return;
+
+   for( auto& pModul: m_vpModules )
+      for( auto& pFsm: pModul->m_vpFsm )
+         for( auto& pGroup: pFsm->m_vpGroups )
+            for( auto& pState: pGroup->m_vpStates )
+               pState->generateTransitionTooltipFromLabel();
 }
 
 /*!----------------------------------------------------------------------------

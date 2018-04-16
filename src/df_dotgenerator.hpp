@@ -22,7 +22,13 @@ namespace DocFsm
 {
 
 typedef std::pair< const DotKeywords::DOT_ATTR_ITEM_T&, std::string* > ATTR_T;
-typedef std::vector< const ATTR_T* > ATTR_LIST_T;
+
+///////////////////////////////////////////////////////////////////////////////
+class ATTR_LIST_T: public std::vector< const ATTR_T* >
+{
+public:
+   void generateTooltipFromLabel( const DotKeywords::DOT_ATTR_LIST_T& );
+};
 
 ///////////////////////////////////////////////////////////////////////////////
 class StateGraph;
@@ -38,6 +44,10 @@ public:
    {}
    ATTR_LIST_T& getAttrList( void ) { return m_vpAttributes; }
    StateGraph*  getTargetState( void ) { return m_pTargetState; }
+   void generateTooltipFromLabel( void )
+   {
+      m_vpAttributes.generateTooltipFromLabel( DotKeywords::c_edgeAttributes );
+   }
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -137,6 +147,14 @@ public:
    std::string& getName( void ) { return  m_name; }
    int getFsmNumber( void ) const { return m_fsmNumber; }
    ATTR_LIST_T& getAttrList( void ) { return m_vpAttributes; }
+
+   void generateStateTooltipFromLabel( void )
+   {
+      m_vpAttributes.generateTooltipFromLabel( DotKeywords::c_nodeAttributes );
+   }
+
+   void generateTransitionTooltipFromLabel( void );
+
 private:
    bool _obtainFsmNumberIfEqual( int fsmNumber );
    void printName( std::ostream& rOut );

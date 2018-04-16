@@ -10,7 +10,7 @@
 ###############################################################################
 cmake_minimum_required( VERSION 2.8 )
 
-set( DOCFSM_VERSION "1.1" )
+set( DOCFSM_VERSION "1.2" )
 
 #set( DEBUG 1 )
 

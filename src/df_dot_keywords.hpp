@@ -73,6 +73,7 @@ public:
       GROUP,
       SHAPE,
       STYLE,
+      TOOLTIP,
       URL
    };
 

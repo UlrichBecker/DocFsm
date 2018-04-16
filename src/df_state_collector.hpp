@@ -154,6 +154,12 @@ class StateCollector: public KeywordInterpreter
       int onGiven( CLOP::PARSER* poParser ) override;
    };
 
+   class SetGenerateTransitionTooltip: public Option
+   {
+   public:
+      SetGenerateTransitionTooltip( StateCollector* );
+      int onGiven( CLOP::PARSER* poParser ) override;
+   };
 
    SetGraphAttributes                  m_setGraphAttributes;
    SetNodeAttributes                   m_setNodeAttributes;
@@ -163,6 +169,7 @@ class StateCollector: public KeywordInterpreter
    SetNoFsmGroups                      m_setNoFsmGroups;
    SetNoTransitions                    m_setNoTransitions;
    SetNoTransitionLabel                m_setNoTransitionLabel;
+   SetGenerateTransitionTooltip        m_setTransitionToolTip;
    ATTR_LIST_T                         m_vpGraphAttributes;
    ATTR_LIST_T                         m_vpNodeAttributes;
    ATTR_LIST_T                         m_vpEdgeAttributes;
@@ -174,6 +181,7 @@ class StateCollector: public KeywordInterpreter
    bool                                m_noFsmGroups;
    bool                                m_noTransitions;
    bool                                m_noTransitionLabels;
+   bool                                m_generateTransitionTooltips;
    int                                 m_entryCount;
    MODULE_V                            m_vpModules;
    AttributeReader                     m_oAttributeReader;
@@ -213,6 +221,7 @@ public:
 
    void splitInClusters( void );
    void splitInGroups( void );
+   void generateTooltipFromLabel( void );
 
    void print( std::ostream& rOut );
 

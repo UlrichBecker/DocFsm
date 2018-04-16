@@ -72,6 +72,7 @@ int main(int argc, char** ppArgv )
       }
       collector.splitInClusters();
       collector.splitInGroups();
+      collector.generateTooltipFromLabel();
       collector.print( std::cout );
    }
    catch( ... )

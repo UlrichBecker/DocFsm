@@ -18,6 +18,47 @@
 
 using namespace DocFsm;
 
+///////////////////////////////////////////////////////////////////////////////
+/*!----------------------------------------------------------------------------
+*/
+void ATTR_LIST_T::generateTooltipFromLabel( const DotKeywords::DOT_ATTR_LIST_T& rList )
+{
+   for( auto& pAttr: *this )
+      if( DotKeywords::getId( pAttr->first ) == DotKeywords::TOOLTIP )
+         return; // Tooltip already defined in source-code.
+
+   std::string* pLabelText = nullptr;
+   for( auto& pAttr: *this )
+   {
+      if( DotKeywords::getId( pAttr->first ) == DotKeywords::LABEL )
+      {
+         pLabelText = pAttr->second;
+         break;
+      }
+   }
+   if( pLabelText == nullptr || pLabelText->empty() )
+      return; // No label preset respectively no label-text.
+
+   const DotKeywords::DOT_ATTR_ITEM_T* pToolTip = DotKeywords::find( rList, "tooltip" );
+   assert( pToolTip != nullptr );
+
+   std::string* pToolTipText = new std::string;
+
+   for( auto it = pLabelText->begin(); it != pLabelText->end(); it++ )
+   {
+      if( *it == 'n' && pToolTipText->back() == '\\' )
+      {
+         pToolTipText->pop_back();
+         pToolTipText->push_back( ' ' );
+      }
+      else
+         pToolTipText->push_back( *it );
+   }
+   pToolTipText->shrink_to_fit();
+   push_back( new ATTR_T( *pToolTip, pToolTipText ) );
+}
+
+///////////////////////////////////////////////////////////////////////////////
 /*!----------------------------------------------------------------------------
 */
 void StateGraph::addClusterNumber( int n )
@@ -230,6 +271,14 @@ std::string* StateGraph::findGroupName( void )
       return pAttr->second;
    }
    return nullptr;
+}
+
+/*!----------------------------------------------------------------------------
+*/
+void StateGraph::generateTransitionTooltipFromLabel( void )
+{
+   for( auto& pTransition: m_vpTransitions )
+      pTransition->generateTooltipFromLabel();
 }
 
 //================================== EOF ======================================

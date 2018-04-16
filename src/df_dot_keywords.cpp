@@ -70,7 +70,7 @@ const DotKeywords::DOT_ATTR_LIST_T DotKeywords::c_edgeAttributes =
    std::make_tuple("tailtooltip", "tooltip annotation near tail of edge", NOTHING, DOT ),
    std::make_tuple("tailURL",     "URL attached to tail label", URL, DOT ),
    std::make_tuple("target",      "if URL is set, determines browser window for URL", NOTHING, DOT ),
-   std::make_tuple("tooltip",     "tooltip annotation", NOTHING, DOT ),
+   std::make_tuple("tooltip",     "tooltip annotation", TOOLTIP, DOT ),
    std::make_tuple("weight",      "integer cost of stretching an edge", NOTHING, DOT )
 };
 
@@ -107,7 +107,7 @@ const DotKeywords::DOT_ATTR_LIST_T DotKeywords::c_nodeAttributes =
    std::make_tuple("skew",        "skewing of node for shape=polygon", NOTHING, DOT),
    std::make_tuple("style",       "graphics options, e.g. bold, dotted, filled;", STYLE, DOT),
    std::make_tuple("target",      "if URL is set, determines browser window for URL", NOTHING, DOT),
-   std::make_tuple("tooltip",     "tooltip annotation", NOTHING, DOT),
+   std::make_tuple("tooltip",     "tooltip annotation", TOOLTIP, DOT),
    std::make_tuple("URL",         "URL associated with node (format-dependent)", URL, DOT),
    std::make_tuple("width",       "minimum width in inches", NOTHING, DOT),
 
@@ -165,7 +165,7 @@ const DotKeywords::DOT_ATTR_LIST_T DotKeywords::c_graphAttributes =
    std::make_tuple("style",       "graphics options, e.g. filled for clusters", STYLE, DOT ),
    std::make_tuple("stylesheet",  "pathname or URL to XML style sheet for SVG", NOTHING, DOT ),
    std::make_tuple("target",      "if URL is set, determines browser window for URL", NOTHING, DOT ),
-   std::make_tuple("tooltip",     "tooltip annotation for cluster", NOTHING, DOT ),
+   std::make_tuple("tooltip",     "tooltip annotation for cluster", TOOLTIP, DOT ),
    std::make_tuple("truecolor",   "if set, force 24 bit or indexed color in image output", NOTHING, DOT ),
    std::make_tuple("viewport",    "clipping window on output", NOTHING, DOT ),
    std::make_tuple("URL",         "URL associated with graph (format-dependent)", URL, DOT )
