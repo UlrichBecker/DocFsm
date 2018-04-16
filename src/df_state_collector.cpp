@@ -450,6 +450,26 @@ int StateCollector::SetNoTransitions::onGiven( CLOP::PARSER* poParser )
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+/*!----------------------------------------------------------------------------
+*/
+StateCollector::SetNoTransitionLabel::SetNoTransitionLabel( StateCollector* pParent )
+   :Option( pParent )
+{
+   m_hasArg    = NO_ARG;
+   m_shortOpt  = 'O';
+   m_longOpt   = "noTrLabel";
+   m_helpText  = "Omit printing of transition text-labels.";
+}
+
+/*!----------------------------------------------------------------------------
+*/
+int StateCollector::SetNoTransitionLabel::onGiven( CLOP::PARSER* poParser )
+{
+   m_pParent->m_noTransitionLabels = true;
+   return 0;
+}
+
+///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 const std::string StateCollector::c_strLabel = "label = ";
 
@@ -467,12 +487,14 @@ StateCollector::StateCollector( SourceBrowser& rSourceBrowser,
    ,m_setNoStateGroups( this )
    ,m_setNoFsmGroups( this )
    ,m_setNoTransitions( this )
+   ,m_setNoTransitionLabel( this )
    ,m_rKeywords( rKeywords )
    ,m_parseArgument( false )
    ,m_isSingle( false )
    ,m_noStateGroups( false )
    ,m_noFsmGroups( false )
    ,m_noTransitions( false )
+   ,m_noTransitionLabels( false )
    ,m_entryCount( 0 )
 {
    rCommandLine( m_setGraphAttributes )
@@ -481,7 +503,8 @@ StateCollector::StateCollector( SourceBrowser& rSourceBrowser,
                ( m_setSingleGraph )
                ( m_setNoStateGroups )
                ( m_setNoFsmGroups )
-               ( m_setNoTransitions );
+               ( m_setNoTransitions )
+               ( m_setNoTransitionLabel );
    m_pLabelAttribute = DotKeywords::findNodeWord( "label" );
    assert( m_pLabelAttribute != nullptr );
 }

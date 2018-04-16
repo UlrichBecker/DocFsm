@@ -147,6 +147,14 @@ class StateCollector: public KeywordInterpreter
       int onGiven( CLOP::PARSER* poParser ) override;
    };
 
+   class SetNoTransitionLabel: public Option
+   {
+   public:
+      SetNoTransitionLabel( StateCollector* );
+      int onGiven( CLOP::PARSER* poParser ) override;
+   };
+
+
    SetGraphAttributes                  m_setGraphAttributes;
    SetNodeAttributes                   m_setNodeAttributes;
    SetEdgeAttributes                   m_setEdgeAttributes;
@@ -154,6 +162,7 @@ class StateCollector: public KeywordInterpreter
    SetNoStateGroups                    m_setNoStateGroups;
    SetNoFsmGroups                      m_setNoFsmGroups;
    SetNoTransitions                    m_setNoTransitions;
+   SetNoTransitionLabel                m_setNoTransitionLabel;
    ATTR_LIST_T                         m_vpGraphAttributes;
    ATTR_LIST_T                         m_vpNodeAttributes;
    ATTR_LIST_T                         m_vpEdgeAttributes;
@@ -164,6 +173,7 @@ class StateCollector: public KeywordInterpreter
    bool                                m_noStateGroups;
    bool                                m_noFsmGroups;
    bool                                m_noTransitions;
+   bool                                m_noTransitionLabels;
    int                                 m_entryCount;
    MODULE_V                            m_vpModules;
    AttributeReader                     m_oAttributeReader;
@@ -235,6 +245,11 @@ public:
    static std::string stripFileName( const std::string& rStr );
 
    static void printTabs( std::ostream& rOut, int tabs );
+
+   bool noTransitionLabels( void ) const
+   {
+      return m_noTransitionLabels;
+   }
 
 protected:
    void onRecognized( std::string word ) override;

@@ -90,7 +90,7 @@ public:
 
    void printState( std::ostream&, const int=0 );
    void printTransitions( std::ostream&, const int=0 );
-   static void printAttr( std::ostream& rOut, const ATTR_LIST_T& );
+   static void printAttr( std::ostream& rOut, const ATTR_LIST_T&, bool=true );
    void addAttribute( const std::string& rKey, const std::string& rValue );
    void addClusterNumber( int n );
 

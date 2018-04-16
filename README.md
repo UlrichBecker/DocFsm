@@ -373,6 +373,9 @@ Options:
 -T, --notransitions
         Print states only, no transitions.
 
+-O, --noTrLabel
+        Omit printing of transition text-labels.
+
 -n, --nomerge
         Do not merge transitions with the same target in the same state.
 
@@ -392,7 +395,6 @@ Options:
 TODO
 ----
 - Macro to defining group-attributes.
-- Option for no printing of transition-labels.
 - Update-mode for grafik-level debugging of FSMs (version 2.X).
 - Presentation of sub-FSMs.
 - DocFsm also compilable for MS-Windows and Mac-OS.

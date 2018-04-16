@@ -74,7 +74,8 @@ void StateGraph::printTransitions( std::ostream& rOut, const int tabs )
       rOut << " -> ";
       printName( rOut );
       if( !pCaller->getTransition()->getAttrList().empty() )
-         printAttr( rOut, pCaller->getTransition()->getAttrList() );
+         printAttr( rOut, pCaller->getTransition()->getAttrList(),
+                    !m_pParent->noTransitionLabels() );
       rOut << ";\n";
    }
 #else
@@ -85,7 +86,8 @@ void StateGraph::printTransitions( std::ostream& rOut, const int tabs )
       rOut << " -> ";
       pTransition->getTargetState()->printName( rOut );
       if( !pTransition->getAttrList().empty() )
-         printAttr( rOut, pTransition->getAttrList() );
+         printAttr( rOut, pTransition->getAttrList(),
+            !m_pParent->noTransitionLabels() );
       rOut << ";\n";
    }
 #endif
@@ -94,18 +96,23 @@ void StateGraph::printTransitions( std::ostream& rOut, const int tabs )
 
 /*!----------------------------------------------------------------------------
 */
-void StateGraph::printAttr( std::ostream& rOut, const ATTR_LIST_T& rvpAttributes )
+void StateGraph::printAttr( std::ostream& rOut, const ATTR_LIST_T& rvpAttributes,
+                            bool printLabel )
 {
    bool next = false;
    rOut << " [";
    for( auto& pAttribute : rvpAttributes )
    {
-      if( DotKeywords::getKategory(pAttribute->first) != DotKeywords::DOT )
+      if( DotKeywords::getKategory( pAttribute->first ) != DotKeywords::DOT )
           continue;
+      if( DotKeywords::getId( pAttribute->first ) == DotKeywords::LABEL &&
+         !printLabel )
+         continue;
       if( next )
          rOut << ", ";
       next = true;
-      rOut << DotKeywords::getKeyWord(pAttribute->first) << " = " << *pAttribute->second;
+      rOut << DotKeywords::getKeyWord( pAttribute->first ) << " = "
+           << *pAttribute->second;
    }
    rOut << ']';
 }
