@@ -13,7 +13,7 @@ cmake_minimum_required( VERSION 2.8 )
 
 set( DOCFSM_VERSION "1.3" )
 
-#set( DEBUG 1 )
+set( DEBUG 1 )
 
 set( PROJECT_NAME docfsm )
 
