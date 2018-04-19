@@ -22,10 +22,8 @@ namespace DocFsm
 ///////////////////////////////////////////////////////////////////////////////
 class CommandlineParser: public CLOP::PARSER
 {
-public:
    typedef std::vector<std::string> FILE_NAME_LIST_T;
 
-private:
    class OptPrintHelp: public CLOP::OPTION_V
    {
    public:
@@ -52,8 +50,7 @@ private:
    OptVersion   m_optVersion;
 
    FILE_NAME_LIST_T m_vSourceFiles;
-   std::string  m_fileName;
-   bool         m_verbose;
+   bool             m_verbose;
 
 public:
    CommandlineParser( int argc, char** ppArgv )
@@ -64,10 +61,6 @@ public:
    }
 
    int onArgument( void ) override;
-   const std::string& getFilename( void ) const
-   {
-      return m_fileName;
-   }
 
    const FILE_NAME_LIST_T& getFileNameList( void ) const
    {
