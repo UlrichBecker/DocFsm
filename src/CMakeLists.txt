@@ -9,8 +9,14 @@
 ## Revision:                                                                 ##
 ###############################################################################
 cmake_minimum_required( VERSION 2.8 )
+
+
+set( DOCFSM_VERSION "1.2" )
+
+set( DEBUG 1 )
+
 set( PROJECT_NAME docfsm )
-#set( DEBUG 1 )
+
 
 execute_process( COMMAND git tag OUTPUT_VARIABLE DOCFSM_VERSION )
 if( NOT DOCFSM_VERSION )
@@ -25,15 +31,20 @@ function( DownloadIfNotPresent filename )
    endif()
 endfunction()
 
-DownloadIfNotPresent( parse_opts.hpp )
-DownloadIfNotPresent( parse_opts.cpp )
-
 project( ${PROJECT_NAME} )
 
+set( CLOP_LIB_FILENAME "/usr/lib64/libParseOptsCpp11.so" )
+
+if( NOT EXISTS ${CLOP_LIB_FILENAME} )
+   set( PARSE_OPTS_SRC "parse_opts.cpp" )
+   DownloadIfNotPresent( parse_opts.hpp )
+   DownloadIfNotPresent( ${PARSE_OPTS_SRC} )
+   add_definitions( "-DCONFIG_CLOP_NO_OPTIONAL_ARG" )
+endif()
 
 add_definitions( "-I${CMAKE_CURRENT_SOURCE_DIR}" )
 #add_definitions( "-DCONFIG_PRINT_CALLER_LIST" )
-add_definitions( "-DCONFIG_CLOP_NO_OPTIONAL_ARG" )
+
 add_definitions( "-DCONFIG_POINT_AS_ENTRY_EXIT_STATE" )
 add_definitions( "-D__DOCFSM_VERSION__=${DOCFSM_VERSION}" )
 
@@ -45,11 +56,16 @@ add_executable( ${PROJECT_NAME}  df_preparser.cpp
                                  df_dotgenerator.cpp
                                  df_keyword.cpp
                                  df_attribute_reader.cpp
-                                 parse_opts.cpp
                                  df_commandline.cpp
                                  df_state_collector.cpp
                                  df_dot_keywords.cpp
+                                 ${PARSE_OPTS_SRC}
                                  df_docfsm.cpp )
+
+if( EXISTS ${CLOP_LIB_FILENAME} )
+  target_link_libraries( ${PROJECT_NAME} ParseOptsCpp11 )
+endif()
+
 if( DEBUG )
   add_definitions( -D_DEBUG )
 #  add_definitions( -D_DEBUG_PREPARSER )
