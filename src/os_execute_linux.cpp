@@ -43,13 +43,15 @@ Execution::~Execution( void )
 */
 bool Execution::run( const std::string& rFilename )
 {
-   if( ::access( m_exe.c_str(), X_OK ) != 0 )
+#if 1
+   std::string bin = m_exe.substr(0, m_exe.find( ' ' ));
+   if( ::access( bin.c_str(), X_OK ) != 0 )
    {
-      ERROR_MESSAGE( "Executable binary not found in \"" << m_exe
+      ERROR_MESSAGE( "Executable binary not found in \"" << bin
                      << "\" " << ::strerror( errno ) );
       return true;
    }
-
+#endif
    if( m_inPipe() )
    {
       ERROR_MESSAGE( "Couldn't create input-pipe! " << ::strerror( errno ) );
