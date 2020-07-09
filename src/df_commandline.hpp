@@ -1,13 +1,13 @@
 /*****************************************************************************/
 /*                                                                           */
-/*!             @brief Command line interface of CSTATE                      */
+/*!             @brief Command line interface of DOC-FSM                      */
 /*                                                                           */
 /*---------------------------------------------------------------------------*/
 /*! @file    df_commandline.hpp                                              */
 /*! @see     df_commandline.cpp                                              */
 /*! @author  Ulrich Becker                                                   */
 /*! @date    17.12.2017                                                      */
-/*  Updates:                                                                 */
+/*  Updates: 09.07.2020  generate_doc_tagged                                 */
 /*****************************************************************************/
 #ifndef _DF_COMMANDLINE_HPP
 #define _DF_COMMANDLINE_HPP
@@ -31,6 +31,19 @@ class CommandlineParser: public CLOP::PARSER
       int onGiven( PARSER* poParser ) override;
    };
 
+#ifdef CONFIG_GSI_AUTODOC_OPTION
+   /*!
+    * @brief GSI specific option for Autodoc its only necessary when this tool
+    *        will used in the GSI (www.gsi.de).
+    */
+   class OptGsiAutodoc: public CLOP::OPTION_V
+   {
+   public:
+      OptGsiAutodoc( void );
+      int onGiven( PARSER* poParser ) override;
+   };
+#endif
+
    class OptVerbose: public CLOP::OPTION_V
    {
    public:
@@ -45,9 +58,12 @@ class CommandlineParser: public CLOP::PARSER
       int onGiven( PARSER* poParser ) override;
    };
 
-   OptPrintHelp m_optPrintHelp;
-   OptVerbose   m_optVerbose;
-   OptVersion   m_optVersion;
+   OptPrintHelp  m_optPrintHelp;
+#ifdef CONFIG_GSI_AUTODOC_OPTION
+   OptGsiAutodoc m_optGsiAutodoc;
+#endif
+   OptVerbose    m_optVerbose;
+   OptVersion    m_optVersion;
 
    FILE_NAME_LIST_T m_vSourceFiles;
    bool             m_verbose;
@@ -57,7 +73,11 @@ public:
       :PARSER( argc, ppArgv )
       ,m_verbose(false)
    {
-      add( m_optPrintHelp )( m_optVerbose )( m_optVersion );
+      add( m_optPrintHelp )
+#ifdef CONFIG_GSI_AUTODOC_OPTION
+      ( m_optGsiAutodoc )
+#endif
+      ( m_optVerbose )( m_optVersion );
    }
 
    int onArgument( void ) override;

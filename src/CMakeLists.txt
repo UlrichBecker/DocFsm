@@ -11,7 +11,7 @@
 cmake_minimum_required( VERSION 2.8 )
 
 
-set( DOCFSM_VERSION "1.2" )
+set( DOCFSM_VERSION "1.3" )
 
 #set( DEBUG 1 )
 
@@ -20,7 +20,7 @@ set( PROJECT_NAME docfsm )
 
 execute_process( COMMAND git tag OUTPUT_VARIABLE DOCFSM_VERSION )
 if( NOT DOCFSM_VERSION )
- set( DOCFSM_VERSION "1.2 no git" )
+ set( DOCFSM_VERSION "1.3 no git" )
 endif(NOT DOCFSM_VERSION )
 
 set( GIT_REPOSITORY_URL "https://raw.githubusercontent.com/UlrichBecker/command_line_option_parser_cpp11/master/src/" )
@@ -44,6 +44,10 @@ endif()
 
 add_definitions( "-I${CMAKE_CURRENT_SOURCE_DIR}" )
 #add_definitions( "-DCONFIG_PRINT_CALLER_LIST" )
+
+# GSI specific compiler switch for Autodoc its only necessary when this tool
+# will used in the GSI (www.gsi.de).
+add_definitions( "-DCONFIG_GSI_AUTODOC_OPTION" )
 
 add_definitions( "-DCONFIG_POINT_AS_ENTRY_EXIT_STATE" )
 add_definitions( "-D__DOCFSM_VERSION__=${DOCFSM_VERSION}" )

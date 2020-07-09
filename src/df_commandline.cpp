@@ -1,13 +1,13 @@
 /*****************************************************************************/
 /*                                                                           */
-/*!             @brief Command line interface of CSTATE                      */
+/*!             @brief Command line interface of DOC-FSM                      */
 /*                                                                           */
 /*---------------------------------------------------------------------------*/
 /*! @file    df_commandline.cpp                                              */
 /*! @see     df_commandline.hpp                                              */
 /*! @author  Ulrich Becker                                                   */
 /*! @date    17.12.2017                                                      */
-/*  Updates:                                                                 */
+/*  Updates: 09.07.2020  generate_doc_tagged                                                             */
 /*****************************************************************************/
 #ifndef __DOCFSM__
  #include <unistd.h>
@@ -49,12 +49,85 @@ int CommandlineParser::OptPrintHelp::onGiven( PARSER* poParser )
                 " --std c++11 -I /path/to/my/additional/headers myFsm.cpp"
                 " | dot -Tpdf -o myFsm.pdf\n\n";
 
+   std::cout << "Example 3: Displaying directly from source file via Image Magick:\n";
+   std::cout << poParser->getProgramName() <<
+                " myFsm.cpp | display\n\n";
+
    std::cout << "Options:\n";
    poParser->list( std::cout );
    std::cout << std::endl;
    ::exit( EXIT_SUCCESS );
    return 0;
-} 
+}
+
+#ifdef CONFIG_GSI_AUTODOC_OPTION
+/*!----------------------------------------------------------------------------
+*/
+CommandlineParser::OptGsiAutodoc::OptGsiAutodoc( void )
+{
+   m_hasArg   = NO_ARG;
+   m_shortOpt = '\0';
+   m_longOpt  = "generate_doc_tagged";
+   m_helpText = "GSI specific option will used from GSI-Autodoc only. (www.gsi.de)";
+}
+
+/*!----------------------------------------------------------------------------
+*/
+int CommandlineParser::OptGsiAutodoc::onGiven( PARSER* poParser )
+{
+   std::string name = poParser->getProgramName().substr(poParser->getProgramName().find_last_of('/')+1);
+   std::cout 
+   << "<toolinfo>\n"
+      "\t<name>" << name << "</name>\n"
+      "\t<topic>Development, Release, Rollout</topic>\n"
+      "\t<description>Documentation and develop tool for visualizing"
+                      " of Finite State Machines from source code written"
+                      " in C or C++, via Graphviz and/or Image Magick.</description>\n"
+      "\t<usage>" << name << " {SCU- target IP-address}";
+      for( const auto& pOption: *poParser )
+      {
+         if( pOption == this )
+            continue;
+         std::cout << " [";
+         if( pOption->m_shortOpt != '\0' )
+         {
+            std::cout << '-' << pOption->m_shortOpt;
+            if( pOption->m_hasArg != OPTION::NO_ARG )
+            {
+               std::cout << ' ';
+               if( pOption->m_hasArg == OPTION::OPTIONAL_ARG )
+                  std::cout << '=';
+               std::cout << "ARG";
+            }
+            if( !pOption->m_longOpt.empty() )
+               std::cout << ", ";
+         }
+         if( !pOption->m_longOpt.empty() )
+         {
+            std::cout << "--" << pOption->m_longOpt;
+            if( pOption->m_hasArg != OPTION::NO_ARG )
+            {
+               std::cout << ' ';
+               if( pOption->m_hasArg == OPTION::OPTIONAL_ARG )
+                   std::cout << '=';
+               std::cout << "ARG";
+            }
+         }
+         std::cout << ']';
+      }
+      std::cout << "\n\t</usage>\n"
+      "\t<author>Ulrich Becker</author>\n"
+      "\t<tags>graphics</tags>\n"
+      "\t<version>" DOCFSM_VERSION "</version>\n"
+      "\t<documentation>https://github.com/UlrichBecker/DocFsm</documentation>\n"
+      "\t<environment></environment>\n"
+      "\t<requires>Graphviz and/or Image Magick</requires>\n"
+      "\t<autodocversion>1.0</autodocversion>\n"
+   "</toolinfo>" << std::endl;
+   ::exit( EXIT_SUCCESS );
+   return 0;
+}
+#endif // ifdef CONFIG_GSI_AUTODOC_OPTION
 
 /*!----------------------------------------------------------------------------
 */
