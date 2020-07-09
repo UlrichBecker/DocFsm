@@ -83,7 +83,7 @@ int CommandlineParser::OptGsiAutodoc::onGiven( PARSER* poParser )
       "\t<description>Documentation and develop tool for visualizing"
                       " of Finite State Machines from source code written"
                       " in C or C++, via Graphviz and/or Image Magick.</description>\n"
-      "\t<usage>" << name << " {SCU- target IP-address}";
+      "\t<usage>" << name;
       for( const auto& pOption: *poParser )
       {
          if( pOption == this )
@@ -119,7 +119,7 @@ int CommandlineParser::OptGsiAutodoc::onGiven( PARSER* poParser )
          }
          std::cout << ']';
       }
-      std::cout << "\n\t</usage>\n"
+      std::cout << " {soucefile(s)}\n\t</usage>\n"
       "\t<author>Ulrich Becker</author>\n"
       "\t<tags>graphics</tags>\n"
       "\t<version>" DOCFSM_VERSION "</version>\n"
