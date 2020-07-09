@@ -95,8 +95,10 @@ int CommandlineParser::OptGsiAutodoc::onGiven( PARSER* poParser )
             if( pOption->m_hasArg != OPTION::NO_ARG )
             {
                std::cout << ' ';
+            #ifndef CONFIG_CLOP_NO_OPTIONAL_ARG
                if( pOption->m_hasArg == OPTION::OPTIONAL_ARG )
                   std::cout << '=';
+            #endif
                std::cout << "ARG";
             }
             if( !pOption->m_longOpt.empty() )
@@ -108,8 +110,10 @@ int CommandlineParser::OptGsiAutodoc::onGiven( PARSER* poParser )
             if( pOption->m_hasArg != OPTION::NO_ARG )
             {
                std::cout << ' ';
+            #ifndef CONFIG_CLOP_NO_OPTIONAL_ARG
                if( pOption->m_hasArg == OPTION::OPTIONAL_ARG )
                    std::cout << '=';
+            #endif
                std::cout << "ARG";
             }
          }
