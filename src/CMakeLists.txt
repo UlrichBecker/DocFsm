@@ -18,10 +18,10 @@ set( DOCFSM_VERSION "1.3" )
 set( PROJECT_NAME docfsm )
 
 
-execute_process( COMMAND git tag OUTPUT_VARIABLE DOCFSM_VERSION )
-if( NOT DOCFSM_VERSION )
- set( DOCFSM_VERSION "1.3 no git" )
-endif(NOT DOCFSM_VERSION )
+#execute_process( COMMAND git tag OUTPUT_VARIABLE DOCFSM_VERSION )
+#if( NOT DOCFSM_VERSION )
+# set( DOCFSM_VERSION "1.3 no git" )
+#endif(NOT DOCFSM_VERSION )
 
 set( GIT_REPOSITORY_URL "https://raw.githubusercontent.com/UlrichBecker/command_line_option_parser_cpp11/master/src/" )
 
