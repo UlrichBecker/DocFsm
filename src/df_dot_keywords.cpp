@@ -252,7 +252,7 @@ DotKeywords::DotKeywords( CommandlineParser& rCommandlineParser )
 const DotKeywords::DOT_ATTR_ITEM_T* DotKeywords::find( const DOT_ATTR_LIST_T& rList,
                                                        const std::string& word )
 {
-   for( auto& item : rList )
+   for( const auto& item : rList )
    {
       if( getKeyWord( item ) == word )
          return &item;
@@ -264,7 +264,7 @@ const DotKeywords::DOT_ATTR_ITEM_T* DotKeywords::find( const DOT_ATTR_LIST_T& rL
 */
 void DotKeywords::list( const DOT_ATTR_LIST_T& rList, bool verbose )
 {
-   for( auto& item : rList )
+   for( const auto& item : rList )
    {
       if( verbose )
           std::cout << BOLD;

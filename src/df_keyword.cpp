@@ -117,7 +117,7 @@ void SourceBrowser::back( void )
 */
 bool SourceBrowser::browse( void )
 {
-   for( auto& i : m_rsSource )
+   for( const auto& i : m_rsSource )
    {
       assert( m_stack.size() > 0 );
       assert( m_stack.size() <= 2 );

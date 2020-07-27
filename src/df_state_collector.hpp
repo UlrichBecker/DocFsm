@@ -29,7 +29,8 @@ namespace DocFsm
 class StateCollector: public KeywordInterpreter
 {
    static const std::string c_strLabel;
-   typedef  std::list <StateGraph*> STATES;
+
+   using STATES = std::list <StateGraph*>;
 
    struct GROUP
    {
@@ -51,7 +52,7 @@ class StateCollector: public KeywordInterpreter
       void addStatePtrIfNotAlreadyContaining( StateGraph* );
    };
 
-   typedef std::list <GROUP*> GROUPS;
+   using GROUPS = std::list <GROUP*>;
 
    struct FSM
    {
@@ -67,7 +68,7 @@ class StateCollector: public KeywordInterpreter
       void print( std::ostream& rOut, const std::string& clusterName, int tabs );
    };
 
-   typedef std::vector<FSM*> FSM_LIST;
+   using FSM_LIST = std::vector<FSM*>;
 
    struct MODULE
    {
@@ -81,7 +82,7 @@ class StateCollector: public KeywordInterpreter
       int isATarget( const StateGraph* pStateGraph );
    };
 
-   typedef std::vector <MODULE*> MODULE_V;
+   using MODULE_V = std::vector <MODULE*>;
 
    enum TO_COLLECT_T
    {

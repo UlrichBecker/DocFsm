@@ -176,7 +176,7 @@ bool TransitionFinder::handleBraceCount( void )
 const ATTR_T* TransitionFinder::findAttribute(  TransitionGraph& rTransition,
                                          const DotKeywords::ID_T id )
 {
-   for( auto& pAttr : rTransition.getAttrList() )
+   for( const auto& pAttr : rTransition.getAttrList() )
    {
       if( DotKeywords::getId(pAttr->first) == id )
          return pAttr;

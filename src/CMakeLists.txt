@@ -10,13 +10,12 @@
 ###############################################################################
 cmake_minimum_required( VERSION 2.8 )
 
-
 set( DOCFSM_VERSION "1.3" )
+
 
 set( DEBUG 1 )
 
 set( PROJECT_NAME docfsm )
-
 
 #execute_process( COMMAND git tag OUTPUT_VARIABLE DOCFSM_VERSION )
 #if( NOT DOCFSM_VERSION )

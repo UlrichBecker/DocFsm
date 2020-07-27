@@ -681,10 +681,10 @@ bool StateCollector::readStateAttributes( StateGraph* poTargetStade )
 */
 StateGraph* StateCollector::find( const std::string& name )
 {
-   for( auto& pModul: m_vpModules )
-      for( auto& pFsm: pModul->m_vpFsm )
-         for( auto& pGroup: pFsm->m_vpGroups )
-            for( auto& pState: pGroup->m_vpStates )
+   for( const auto& pModul: m_vpModules )
+      for( const auto& pFsm: pModul->m_vpFsm )
+         for( const auto& pGroup: pFsm->m_vpGroups )
+            for( const auto& pState: pGroup->m_vpStates )
                if( pState->getName() == name )
                   return pState;
 
@@ -701,7 +701,7 @@ bool StateCollector::addGlobalAttribute( const DotKeywords::DOT_ATTR_LIST_T& rDo
    std::string temp;
    bool isArgument = false;
 
-   for( auto& c : rStr )
+   for( const auto& c : rStr )
    {
       if( (c == '=') && !isArgument )
       {
@@ -797,12 +797,12 @@ std::string StateCollector::stripFileName( const std::string& rStr )
 void StateCollector::splitInClusters( void )
 {
    int moduleClusterNumber = 0;
-   for( auto& pModule : m_vpModules )
+   for( const auto& pModule : m_vpModules )
    {
       if( !m_noFsmGroups )
          pModule->splitInClusters();
-      for( auto& pFsm : pModule->m_vpFsm )
-         for( auto& vpStates : pFsm->getStateList() )
+      for( const auto& pFsm : pModule->m_vpFsm )
+         for( const  auto& vpStates : pFsm->getStateList() )
              vpStates->addClusterNumber( moduleClusterNumber );
       moduleClusterNumber++;
    }
@@ -815,7 +815,7 @@ void StateCollector::splitInGroups( void )
    if( m_noStateGroups )
       return;
 
-   for( auto& pModule : m_vpModules )
+   for( const auto& pModule : m_vpModules )
       pModule->splitInGroups();
 }
 
@@ -826,10 +826,10 @@ void StateCollector::generateTooltipFromLabel( void )
    if( !m_generateTransitionTooltips )
       return;
 
-   for( auto& pModul: m_vpModules )
-      for( auto& pFsm: pModul->m_vpFsm )
-         for( auto& pGroup: pFsm->m_vpGroups )
-            for( auto& pState: pGroup->m_vpStates )
+   for( const auto& pModul: m_vpModules )
+      for( const auto& pFsm: pModul->m_vpFsm )
+         for( const auto& pGroup: pFsm->m_vpGroups )
+            for( const auto& pState: pGroup->m_vpStates )
                pState->generateTransitionTooltipFromLabel();
 }
 
@@ -871,7 +871,7 @@ void StateCollector::print( std::ostream& rOut )
 
    bool useSubgraphs = !m_isSingle && (m_vpModules.size() > 1);
    int moduleClusterNumber = 0;
-   for( auto& pModule : m_vpModules )
+   for( const auto& pModule : m_vpModules )
    {
       const std::string c_strSubgraph( "subgraph cluster_" );
 
@@ -882,7 +882,7 @@ void StateCollector::print( std::ostream& rOut )
       }
 
       int fsmClusterNumber = 0;
-      for( auto& pFsm : pModule->m_vpFsm )
+      for( const auto& pFsm : pModule->m_vpFsm )
       {
          int tabs = useSubgraphs? 2 : 1;
          std::string clusterName = c_strSubgraph;

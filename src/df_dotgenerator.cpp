@@ -23,12 +23,12 @@ using namespace DocFsm;
 */
 void ATTR_LIST_T::generateTooltipFromLabel( const DotKeywords::DOT_ATTR_LIST_T& rList )
 {
-   for( auto& pAttr: *this )
+   for( const auto& pAttr: *this )
       if( DotKeywords::getId( pAttr->first ) == DotKeywords::TOOLTIP )
          return; // Tooltip already defined in source-code.
 
    std::string* pLabelText = nullptr;
-   for( auto& pAttr: *this )
+   for( const auto& pAttr: *this )
    {
       if( DotKeywords::getId( pAttr->first ) == DotKeywords::LABEL )
       {
@@ -64,7 +64,7 @@ void ATTR_LIST_T::generateTooltipFromLabel( const DotKeywords::DOT_ATTR_LIST_T& 
 void StateGraph::addClusterNumber( int n )
 {
    bool labelPresent = false;
-   for( auto& pAttribute : m_vpAttributes )
+   for( const auto& pAttribute : m_vpAttributes )
    {
       if( &(pAttribute->first) == m_pParent->getLabelAttribute() )
       {
@@ -108,7 +108,7 @@ void StateGraph::printTransitions( std::ostream& rOut, const int tabs )
       return;
 
 #ifdef CONFIG_PRINT_CALLER_LIST
-   for( auto& pCaller : m_vpCallerList )
+   for( const auto& pCaller : m_vpCallerList )
    {
       StateCollector::printTabs( rOut, tabs );
       pCaller->getState()->printName( rOut );
@@ -120,7 +120,7 @@ void StateGraph::printTransitions( std::ostream& rOut, const int tabs )
       rOut << ";\n";
    }
 #else
-   for( auto& pTransition : m_vpTransitions )
+   for( const auto& pTransition : m_vpTransitions )
    {
       StateCollector::printTabs( rOut, tabs );
       printName( rOut );
@@ -142,7 +142,7 @@ void StateGraph::printAttr( std::ostream& rOut, const ATTR_LIST_T& rvpAttributes
 {
    bool next = false;
    rOut << " [";
-   for( auto& pAttribute : rvpAttributes )
+   for( const auto& pAttribute : rvpAttributes )
    {
       if( DotKeywords::getKategory( pAttribute->first ) != DotKeywords::DOT )
           continue;
@@ -170,9 +170,9 @@ void StateGraph::addAttribute( const std::string& rKey, const std::string& rValu
 StateGraph::~StateGraph( void )
 {
    DEBUG_MESSAGE( "Destructor of \"" << m_name << "\"" );
-   for( auto& pTransition : m_vpTransitions )
+   for( const auto& pTransition : m_vpTransitions )
    {
-      for( auto& pAttribute : pTransition->getAttrList() )
+      for( const auto& pAttribute : pTransition->getAttrList() )
       {
          if( pAttribute->second != nullptr )
             delete pAttribute->second;
@@ -181,7 +181,7 @@ StateGraph::~StateGraph( void )
       delete pTransition;
    }
 #ifdef CONFIG_PRINT_CALLER_LIST
-   for( auto& pCaller : m_vpCallerList )
+   for( const auto& pCaller : m_vpCallerList )
       delete pCaller;
 #endif
 }
@@ -229,7 +229,7 @@ bool StateGraph::_obtainFsmNumberIfEqual( int fsmNumber )
     m_visited = true;
 
     bool ret = false;
-    for( auto& pTransition : m_vpTransitions )
+    for( const auto& pTransition : m_vpTransitions )
     {
        assert( dynamic_cast<StateGraph*>(pTransition->getTargetState()) != nullptr );
        DEBUG_MESSAGE( "Name " << m_name );
@@ -244,7 +244,7 @@ bool StateGraph::_obtainFsmNumberIfEqual( int fsmNumber )
     }
     if( m_fsmNumber == 0 )
         return ret;
-    for( auto& pTransition : m_vpTransitions )
+    for( const auto& pTransition : m_vpTransitions )
     {
        if( pTransition->getTargetState() == this )
           continue;
@@ -262,7 +262,7 @@ bool StateGraph::_obtainFsmNumberIfEqual( int fsmNumber )
 */
 std::string* StateGraph::findGroupName( void )
 {
-   for( auto& pAttr : m_vpAttributes )
+   for( const auto& pAttr : m_vpAttributes )
    {
       if( DotKeywords::getKategory( pAttr->first ) != DotKeywords::DOCFSM )
          continue;
@@ -277,7 +277,7 @@ std::string* StateGraph::findGroupName( void )
 */
 void StateGraph::generateTransitionTooltipFromLabel( void )
 {
-   for( auto& pTransition: m_vpTransitions )
+   for( const auto& pTransition: m_vpTransitions )
       pTransition->generateTooltipFromLabel();
 }
 

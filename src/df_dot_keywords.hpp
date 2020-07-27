@@ -83,8 +83,8 @@ public:
       DOCFSM //!< Attributes for DocFsm
    };
 
-   typedef std::tuple< std::string, std::string, ID_T, KATEGORY_T > DOT_ATTR_ITEM_T;
-   typedef std::vector<DOT_ATTR_ITEM_T>                             DOT_ATTR_LIST_T;
+   using DOT_ATTR_ITEM_T = std::tuple< std::string, std::string, ID_T, KATEGORY_T >;
+   using DOT_ATTR_LIST_T = std::vector<DOT_ATTR_ITEM_T>;
 
    const static DOT_ATTR_LIST_T c_edgeAttributes;
    const static DOT_ATTR_LIST_T c_nodeAttributes;

@@ -21,7 +21,7 @@
 namespace DocFsm
 {
 
-typedef std::pair< const DotKeywords::DOT_ATTR_ITEM_T&, std::string* > ATTR_T;
+using ATTR_T = std::pair< const DotKeywords::DOT_ATTR_ITEM_T&, std::string* >;
 
 ///////////////////////////////////////////////////////////////////////////////
 class ATTR_LIST_T: public std::vector< const ATTR_T* >
@@ -71,10 +71,10 @@ public:
       TransitionGraph* getTransition( void ) { return m_pTransition; }
    };
 
-   typedef std::vector<Caller*> CALLER_LIST_T;
+   using CALLER_LIST_T = std::vector<Caller*>
 #endif
 
-   typedef std::vector<TransitionGraph*> TRANSITION_LIST_T;
+   using TRANSITION_LIST_T = std::vector<TransitionGraph*>;
 
 private:
    StateCollector*               m_pParent;

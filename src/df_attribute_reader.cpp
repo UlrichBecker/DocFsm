@@ -236,7 +236,7 @@ void AttributeReader::ReadValueExit( void )
    assert( dynamic_cast<ATTR_LIST_T*>( m_pAttrList ) != nullptr );
 
    std::string* pValue = new std::string;
-   for( auto& c : m_value )
+   for( const auto& c : m_value )
    {
       if( c != 'n' && pValue->back() == '\\' )
          pValue->pop_back();
