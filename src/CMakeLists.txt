@@ -48,6 +48,8 @@ add_definitions( "-I${CMAKE_CURRENT_SOURCE_DIR}" )
 # will used in the GSI (www.gsi.de).
 add_definitions( "-DCONFIG_GSI_AUTODOC_OPTION" )
 
+add_definitions( "-DCONFIG_USE_KEYWORD_TRANSITION_SELF" )
+
 add_definitions( "-DCONFIG_POINT_AS_ENTRY_EXIT_STATE" )
 add_definitions( "-D__DOCFSM_VERSION__=${DOCFSM_VERSION}" )
 
