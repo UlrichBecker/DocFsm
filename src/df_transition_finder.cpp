@@ -28,9 +28,20 @@ using namespace DocFsm;
       m_newState = _newState;                                              \
    }                                                                       \
    while( false )
+
+   #define FSM_TRANSITION_SELF( attr... )                                  \
+   do                                                                      \
+   {                                                                       \
+      std::cerr << state2str( m_currentState ) << " -> "                   \
+                << state2str( m_currentState ) << std::endl;               \
+   }                                                                       \
+   while( false )
+
 #else
    #define FSM_TRANSITION( _newState, attr... )  m_newState = _newState
+   #define FSM_TRANSITION_SELF( attr... )
 #endif
+
 
 #ifdef FSM_INIT_FSM
   #undef FSM_INIT_FSM
@@ -334,8 +345,9 @@ void TransitionFinder::fsmStep( EVENT_T event )
             break;
          }
 #ifdef __DOCFSM__
-         FSM_TRANSITION( OUTSIDE_STATE );
+         FSM_TRANSITION( OUTSIDE_STATE ); //!<@deprecated
 #endif
+         FSM_TRANSITION_SELF( color = blue ); //!<@todo
          break;
       } // End of case OUTSIDE_STATE
    //--  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
@@ -353,8 +365,9 @@ void TransitionFinder::fsmStep( EVENT_T event )
             return;
 
 #ifdef __DOCFSM__
-         FSM_TRANSITION( INSIDE_ENUM );
+         FSM_TRANSITION( INSIDE_ENUM ); //!<@deprecated
 #endif
+         FSM_TRANSITION_SELF(); //!<@todo
          break;
       } // End of case INSIDE_ENUM
    //--  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
@@ -392,8 +405,9 @@ void TransitionFinder::fsmStep( EVENT_T event )
          if( m_transitionType != KeywordPool::NON )
             FSM_TRANSITION( TRANSITION_KEYWORD, label='FSM-keyword found' );
 #ifdef __DOCFSM__
-         FSM_TRANSITION( INSIDE_STATE );
+         FSM_TRANSITION( INSIDE_STATE ); //!<@deprecated
 #endif
+         FSM_TRANSITION_SELF(); //!<@todo
          break;
       } // End of case INSIDE_STATE
    //--  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
@@ -451,8 +465,9 @@ void TransitionFinder::fsmStep( EVENT_T event )
          if( poState == nullptr )
          {
 #ifdef __DOCFSM__
-            FSM_TRANSITION( TRANSITION_ARGUNENTS );
+            FSM_TRANSITION( TRANSITION_ARGUNENTS ); //!<@deprecated
 #endif
+            FSM_TRANSITION_SELF(); //!<@todo
             break;
          }
          m_pCurrentTransition = new TransitionGraph( poState );
@@ -480,8 +495,9 @@ void TransitionFinder::fsmStep( EVENT_T event )
             break;
          }
 #ifdef __DOCFSM__
-         FSM_TRANSITION( READ_ATTRIBUTES );
+         FSM_TRANSITION( READ_ATTRIBUTES ); //!<@deprecated
 #endif
+         FSM_TRANSITION_SELF(); //!<@todo
          break;
       } // End of case READ_ATTRIBUTES
    }
