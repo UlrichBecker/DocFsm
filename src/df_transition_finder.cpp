@@ -20,9 +20,16 @@ using namespace DocFsm;
 #endif
 
 #ifdef _DEBUG_TRANSITION_FINDER_FSM
+   uint g_selfCount = 0;
    #define FSM_TRANSITION( _newState, attr... )                            \
    do                                                                      \
    {                                                                       \
+      if( g_selfCount > 0 )                                                \
+      {                                                                    \
+         std::cerr << g_selfCount << " x" << std::endl;                    \
+         g_selfCount = 0;                                                  \
+      }                                                                    \
+                                                                           \
       std::cerr << state2str( m_currentState ) << " -> "                   \
                 << state2str( _newState ) << std::endl;                    \
       m_newState = _newState;                                              \
@@ -32,8 +39,10 @@ using namespace DocFsm;
    #define FSM_TRANSITION_SELF( attr... )                                  \
    do                                                                      \
    {                                                                       \
-      std::cerr << state2str( m_currentState ) << " -> "                   \
-                << state2str( m_currentState ) << std::endl;               \
+      if( g_selfCount == 0 )                                               \
+         std::cerr << state2str( m_currentState ) << " -> "                \
+                   << state2str( m_currentState ) << std::endl;            \
+      g_selfCount++;                                                       \
    }                                                                       \
    while( false )
 
