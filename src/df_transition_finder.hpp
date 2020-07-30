@@ -69,6 +69,7 @@ class TransitionFinder: public KeywordInterpreter
    StateGraph*         m_pStateGraph;
    TransitionGraph*    m_pCurrentTransition;
    OptionNoMerge       m_oOptionNoMerge;
+   bool                m_isFirstParam;
 
 public:
    TransitionFinder( StateCollector& rStates, CommandlineParser& );
