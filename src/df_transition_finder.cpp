@@ -435,6 +435,13 @@ void TransitionFinder::fsmStep( EVENT_T event )
                FSM_TRANSITION ( TRANSITION_ARGUNENTS, label='Is transition-keyword' );
                break;
             }
+         #ifdef CONFIG_USE_KEYWORD_TRANSITION_SELF
+            case KeywordPool::TRANSITION_SELF:
+            {
+               std::cerr << "*** TRANSITION_SELF ***" << std::endl; //!<@todo
+               break;
+            }
+         #endif
             case KeywordPool::RETURN:
             {
                if( generateExitState() )
