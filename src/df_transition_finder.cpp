@@ -297,7 +297,7 @@ inline void TransitionFinder::startAttributeReaderTransition( ATTR_LIST_T& rAttr
 /*!----------------------------------------------------------------------------
  * @dotfile df_transition_finder.gv
 */
-void TransitionFinder::fsmStep( EVENT_T event )
+void TransitionFinder::fsmStep( const EVENT_T event )
 {
    /*
     * Entry activities
@@ -350,7 +350,7 @@ void TransitionFinder::fsmStep( EVENT_T event )
                                          color = green );
             break;
          }
-         FSM_TRANSITION_SELF( label= 'test', color = green ); //!<@todo
+         FSM_TRANSITION_SELF( , label= 'test', color = green ); //!<@todo
          break;
       } // End of case OUTSIDE_STATE
    //--  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
@@ -491,6 +491,10 @@ void TransitionFinder::fsmStep( EVENT_T event )
 
          if( isThisCharActual(',') || m_isFirstParam )
          {
+         #ifdef _DEBUG_TRANSITION_FINDER_FSM
+            if( m_isFirstParam )
+               DEBUG_MESSAGE( "m_isFirstParam" );
+         #endif
             m_isFirstParam = false;
             startAttributeReaderTransition( m_pCurrentTransition->getAttrList() );
             FSM_TRANSITION( INSIDE_STATE );

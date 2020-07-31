@@ -93,7 +93,7 @@ protected:
    void onRecognized( std::string ) override;
 
 private:
-   void fsmStep( EVENT_T );
+   void fsmStep( const EVENT_T );
    bool handleBraceCount( void );
    static const ATTR_T* findAttribute(  TransitionGraph&, const DotKeywords::ID_T );
    void mergeAttributes( TransitionGraph& );
