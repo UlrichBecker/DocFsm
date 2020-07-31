@@ -299,233 +299,237 @@ inline void TransitionFinder::startAttributeReaderTransition( ATTR_LIST_T& rAttr
 */
 void TransitionFinder::fsmStep( const EVENT_T event )
 {
-   /*
-    * Entry activities
-    */
-   if( m_newState != m_currentState )
+   bool repeatFsmStep;
+   do
    {
-      switch( m_newState )
-      {
-         case INSIDE_STATE:
+      repeatFsmStep = false;
+      if( m_newState != m_currentState )
+      { /*
+         * Entry activities
+         */
+         switch( m_newState )
          {
-            addTransition();
-            break;
+            case INSIDE_STATE:
+            {
+               addTransition();
+               break;
+            }
+            case OUTSIDE_STATE:
+            {
+               m_pStateGraph = nullptr;
+               m_pCurrentTransition = nullptr;
+               m_exitCount++;
+               break;
+            }
+            default: break;
          }
+         m_currentState = m_newState;
+      }
+   
+      /*
+       * Do activities
+       */
+      switch( m_currentState )
+      {
+      //--  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
          case OUTSIDE_STATE:
          {
-            m_pStateGraph = nullptr;
-            m_pCurrentTransition = nullptr;
-            m_exitCount++;
+            if( event == CHAR )
+               break;
+            if( isThisCharActual('(') )
+               break;
+            assert( m_pStateGraph == nullptr );
+            m_pStateGraph = m_rStates.find( m_sLastWord );
+            if( m_pStateGraph != nullptr ) //found!
+            {
+               FSM_TRANSITION( STATE_BEGIN, label = 'perhaps Do-function\n'
+                                                    'of state found',
+                                            color = red );
+               break;
+            }
+            if( m_sLastWord == "enum" )
+            {
+               FSM_TRANSITION( INSIDE_ENUM, label = 'Enum definition found',
+                                            color = green );
+               break;
+            }
+            FSM_TRANSITION_SELF( label= 'test', color = green ); //!<@todo
             break;
-         }
-         default: break;
-      }
-      m_currentState = m_newState;
-   }
-
-   /*
-    * Do activities
-    */
-   switch( m_currentState )
-   {
-   //--  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
-      case OUTSIDE_STATE:
-      {
-         if( event == CHAR )
-            break;
-         if( isThisCharActual('(') )
-            break;
-         assert( m_pStateGraph == nullptr );
-         m_pStateGraph = m_rStates.find( m_sLastWord );
-         if( m_pStateGraph != nullptr ) //found!
+         } // End of case OUTSIDE_STATE
+      //--  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
+         case INSIDE_ENUM:
          {
-            FSM_TRANSITION( STATE_BEGIN, label = 'perhaps Do-function\n'
-                                                 'of state found',
-                                         color = red );
-            break;
-         }
-         if( m_sLastWord == "enum" )
-         {
-            FSM_TRANSITION( INSIDE_ENUM, label = 'Enum definition found',
-                                         color = green );
-            break;
-         }
-         FSM_TRANSITION_SELF( , label= 'test', color = green ); //!<@todo
-         break;
-      } // End of case OUTSIDE_STATE
-   //--  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
-      case INSIDE_ENUM:
-      {
-         if( event == WORD )
-            break;
-
-         if( handleBraceCount() )
-         {
-            FSM_TRANSITION( OUTSIDE_STATE, label = 'End of enum-definition' );
-            break;
-         }
-         if( m_braceCount < 0 )
-            return;
-
-         FSM_TRANSITION_SELF();
-         break;
-      } // End of case INSIDE_ENUM
-   //--  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
-      case STATE_BEGIN:
-      {
-         if( (event == WORD) || (event == CHAR && isThisCharActual(';')))
-         {
-            FSM_TRANSITION( OUTSIDE_STATE, label = 'No, wasn\'t the header\n'
-                                                   'of a do-function' );
-            break;
-         }
-         FSM_TRANSITION( INSIDE_STATE );
-         break;
-      }
-   //--  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
-      case INSIDE_STATE:
-      {
-         if( event == CHAR )
-         {
+            if( event == WORD )
+               break;
+   
             if( handleBraceCount() )
             {
-               FSM_TRANSITION( OUTSIDE_STATE, label = 'End of do-function' );
+               FSM_TRANSITION( OUTSIDE_STATE, label = 'End of enum-definition' );
                break;
             }
             if( m_braceCount < 0 )
                return;
-
-            break;
-         } 
-         assert( event == WORD );
-         if( m_braceCount == 0 )
-            break;
-
-         m_transitionType = m_rStates.getKeywords().determineTransitionType( m_sLastWord );
-         if( m_transitionType != KeywordPool::NON )
-         {
-            FSM_TRANSITION( TRANSITION_KEYWORD, label='FSM-keyword found' );
-            break;
-         }
-         FSM_TRANSITION_SELF();
-         break;
-      } // End of case INSIDE_STATE
-   //--  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
-      case TRANSITION_KEYWORD:
-      {
-         if( !isThisCharActual('(') )
-         {
-            FSM_TRANSITION( INSIDE_STATE );
-            break;
-         }
-         switch( m_transitionType )
-         {
-            case KeywordPool::NON: { assert(false); break; }
-            case KeywordPool::TRANSITION:
-            {
-               FSM_TRANSITION ( TRANSITION_ARGUNENTS, label='Is transition keyword' );
-               break;
-            }
-         #ifdef CONFIG_USE_KEYWORD_TRANSITION_SELF
-            case KeywordPool::TRANSITION_SELF:
-            {
-               m_pCurrentTransition = new TransitionGraph( m_pStateGraph );
-               m_isFirstParam = true;
-               //FIXME Attributes will not read yet exept by a leading ","!
-               FSM_TRANSITION( READ_ATTRIBUTES, label='Is transition-self keyword' );
-               break;
-            }
-         #endif
-            case KeywordPool::RETURN:
-            {
-               if( generateExitState() )
-               {
-                  startAttributeReaderTransition( m_pCurrentTransition->getAttrList() );
-                  FSM_TRANSITION( INSIDE_STATE );
-               }
-                 // FSM_TRANSITION( READ_ATTRIBUTES, label='Is return-keyword' );
-               break;
-            }
-#if 0
-            case KeywordPool::CALL:
-            {
-               //TODO Generate Sub-State!
-               break;
-            }
-#endif
-            default: FSM_TRANSITION( INSIDE_STATE ); //TODO
-         }
-         break;
-      } // End of case TRANSITION_KEYWORD
-   //--  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
-      case TRANSITION_ARGUNENTS:
-      {
-         if( event == CHAR )
-         {
-            if( isThisCharActual(')') )
-            {
-               FSM_TRANSITION( INSIDE_STATE, label='End of argument-list\n'
-                                                   'reached' );
-               break;
-            }
-            break;
-         }
-         assert( event == WORD );
-         StateGraph* poState = m_rStates.find( m_sLastWord );
-         if( poState == nullptr )
-         {
+   
             FSM_TRANSITION_SELF();
             break;
-         }
-         m_pCurrentTransition = new TransitionGraph( poState );
-         FSM_TRANSITION( READ_ATTRIBUTES );
-         break;
-      } // End of case TRANSITION_ARGUNENTS
-   //--  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
-      case READ_ATTRIBUTES:
-      {
-         assert( dynamic_cast<TransitionGraph*>( m_pCurrentTransition ) != nullptr );
-
-         if( event != CHAR )
-            break;
-
-         if( isThisCharActual(',') || m_isFirstParam )
+         } // End of case INSIDE_ENUM
+      //--  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
+         case STATE_BEGIN:
          {
-         #ifdef _DEBUG_TRANSITION_FINDER_FSM
-            if( m_isFirstParam )
-               DEBUG_MESSAGE( "m_isFirstParam" );
-         #endif
-            m_isFirstParam = false;
-            startAttributeReaderTransition( m_pCurrentTransition->getAttrList() );
+            if( (event == WORD) || (event == CHAR && isThisCharActual(';')))
+            {
+               FSM_TRANSITION( OUTSIDE_STATE, label = 'No, wasn\'t the header\n'
+                                                      'of a do-function' );
+               break;
+            }
             FSM_TRANSITION( INSIDE_STATE );
             break;
          }
-
-         if( isThisCharActual(')') )
+      //--  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
+         case INSIDE_STATE:
          {
-            FSM_TRANSITION( INSIDE_STATE );
+            if( event == CHAR )
+            {
+               if( handleBraceCount() )
+               {
+                  FSM_TRANSITION( OUTSIDE_STATE, label = 'End of do-function' );
+                  break;
+               }
+               if( m_braceCount < 0 )
+                  return;
+   
+               break;
+            } 
+            assert( event == WORD );
+            if( m_braceCount == 0 )
+               break;
+   
+            m_transitionType = m_rStates.getKeywords().determineTransitionType( m_sLastWord );
+            if( m_transitionType != KeywordPool::NON )
+            {
+               FSM_TRANSITION( TRANSITION_KEYWORD, label='FSM-keyword found' );
+               break;
+            }
+            FSM_TRANSITION_SELF();
             break;
-         }
-         FSM_TRANSITION_SELF();
-         break;
-      } // End of case READ_ATTRIBUTES
-   }
-
-   if( m_newState == m_currentState )
-      return;
-
-   /*
-    * Exit activities.
-    */
-   switch( m_currentState )
-   {
-      case OUTSIDE_STATE:
-      {
-         m_braceCount = 0;
-         break;
+         } // End of case INSIDE_STATE
+      //--  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
+         case TRANSITION_KEYWORD:
+         {
+            if( !isThisCharActual('(') )
+            {
+               FSM_TRANSITION( INSIDE_STATE );
+               break;
+            }
+            switch( m_transitionType )
+            {
+               case KeywordPool::NON: { assert(false); break; }
+               case KeywordPool::TRANSITION:
+               {
+                  FSM_TRANSITION ( TRANSITION_ARGUNENTS, label='Is transition keyword' );
+                  break;
+               }
+            #ifdef CONFIG_USE_KEYWORD_TRANSITION_SELF
+               case KeywordPool::TRANSITION_SELF:
+               {
+                  m_pCurrentTransition = new TransitionGraph( m_pStateGraph );
+                  m_isFirstParam = true;
+                  //FIXME Attributes will not read yet exept by a leading ","!
+                  FSM_TRANSITION( READ_ATTRIBUTES, label='Is transition-self keyword' );
+                  break;
+               }
+            #endif
+               case KeywordPool::RETURN:
+               {
+                  if( generateExitState() )
+                  {
+                     startAttributeReaderTransition( m_pCurrentTransition->getAttrList() );
+                     FSM_TRANSITION( INSIDE_STATE );
+                  }
+                    // FSM_TRANSITION( READ_ATTRIBUTES, label='Is return-keyword' );
+                  break;
+               }
+   #if 0
+               case KeywordPool::CALL:
+               {
+                  //TODO Generate Sub-State!
+                  break;
+               }
+   #endif
+               default: FSM_TRANSITION( INSIDE_STATE ); //TODO
+            }
+            break;
+         } // End of case TRANSITION_KEYWORD
+      //--  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
+         case TRANSITION_ARGUNENTS:
+         {
+            if( event == CHAR )
+            {
+               if( isThisCharActual(')') )
+               {
+                  FSM_TRANSITION( INSIDE_STATE, label='End of argument-list\n'
+                                                      'reached' );
+                  break;
+               }
+               break;
+            }
+            assert( event == WORD );
+            StateGraph* poState = m_rStates.find( m_sLastWord );
+            if( poState == nullptr )
+            {
+               FSM_TRANSITION_SELF();
+               break;
+            }
+            m_pCurrentTransition = new TransitionGraph( poState );
+            FSM_TRANSITION( READ_ATTRIBUTES );
+            break;
+         } // End of case TRANSITION_ARGUNENTS
+      //--  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
+         case READ_ATTRIBUTES:
+         {
+            assert( dynamic_cast<TransitionGraph*>( m_pCurrentTransition ) != nullptr );
+   
+            if( event != CHAR )
+               break;
+   
+            if( isThisCharActual(',') || m_isFirstParam )
+            {
+            #ifdef _DEBUG_TRANSITION_FINDER_FSM
+               if( m_isFirstParam )
+                  DEBUG_MESSAGE( "m_isFirstParam" );
+            #endif
+               m_isFirstParam = false;
+               startAttributeReaderTransition( m_pCurrentTransition->getAttrList() );
+               FSM_TRANSITION( INSIDE_STATE );
+               break;
+            }
+   
+            if( isThisCharActual(')') )
+            {
+               FSM_TRANSITION( INSIDE_STATE );
+               break;
+            }
+            FSM_TRANSITION_SELF();
+            break;
+         } // End of case READ_ATTRIBUTES
       }
-      default: break;
+   
+      if( m_newState != m_currentState )
+      {  /*
+          * Exit activities.
+          */
+         switch( m_currentState )
+         {
+            case OUTSIDE_STATE:
+            {
+               m_braceCount = 0;
+               break;
+            }
+            default: break;
+         }
+      }
    }
+   while( repeatFsmStep );
 }
 
 //================================== EOF ======================================
