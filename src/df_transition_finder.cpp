@@ -446,10 +446,11 @@ void TransitionFinder::fsmStep( const EVENT_T event )
                {
                   if( generateExitState() )
                   {
-                     startAttributeReaderTransition( m_pCurrentTransition->getAttrList() );
-                     FSM_TRANSITION( INSIDE_STATE );
+                     m_isFirstParam = true;
+                     repeatFsmStep = true;
+                     FSM_TRANSITION( READ_ATTRIBUTES, label='or return keyword'  );
+                     break;
                   }
-                    // FSM_TRANSITION( READ_ATTRIBUTES, label='Is return-keyword' );
                   break;
                }
    #if 0
@@ -488,13 +489,33 @@ void TransitionFinder::fsmStep( const EVENT_T event )
             break;
          } // End of case TRANSITION_ARGUNENTS
       //--  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
+         case READ_KOMMA:
+         {
+            assert( dynamic_cast<TransitionGraph*>( m_pCurrentTransition ) != nullptr );
+            if( event != CHAR )
+               break;
+            if( isThisCharActual(',') )
+            {
+               repeatFsmStep = true;
+               FSM_TRANSITION( READ_ATTRIBUTES );
+               break;
+            }
+            FSM_TRANSITION_SELF();
+            break;
+         }
+      //--  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
          case READ_ATTRIBUTES:
          {
             assert( dynamic_cast<TransitionGraph*>( m_pCurrentTransition ) != nullptr );
    
-            if( event != CHAR )
+          //  if( event != CHAR )
+            //   break;
+            if( isThisCharActual(')') )
+            {
+               FSM_TRANSITION( INSIDE_STATE );
                break;
-   
+            }
+
             if( isThisCharActual(',') || m_isFirstParam )
             {
             #ifdef _DEBUG_TRANSITION_FINDER_FSM
@@ -507,11 +528,6 @@ void TransitionFinder::fsmStep( const EVENT_T event )
                break;
             }
    
-            if( isThisCharActual(')') )
-            {
-               FSM_TRANSITION( INSIDE_STATE );
-               break;
-            }
             FSM_TRANSITION_SELF();
             break;
          } // End of case READ_ATTRIBUTES
