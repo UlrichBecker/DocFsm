@@ -353,7 +353,7 @@ void TransitionFinder::fsmStep( const EVENT_T event )
                                             color = green );
                break;
             }
-            FSM_TRANSITION_SELF( label= 'test', color = green ); //!<@todo
+            FSM_TRANSITION_SELF( label= 'test', color = blue ); //!<@todo
             break;
          } // End of case OUTSIDE_STATE
       //--  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
@@ -364,13 +364,14 @@ void TransitionFinder::fsmStep( const EVENT_T event )
    
             if( handleBraceCount() )
             {
-               FSM_TRANSITION( OUTSIDE_STATE, label = 'End of enum-definition' );
+               FSM_TRANSITION( OUTSIDE_STATE, label = 'End of enum-definition',
+                                              color = blue );
                break;
             }
             if( m_braceCount < 0 )
                return;
    
-            FSM_TRANSITION_SELF();
+            FSM_TRANSITION_SELF(color = green);
             break;
          } // End of case INSIDE_ENUM
       //--  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
@@ -379,7 +380,8 @@ void TransitionFinder::fsmStep( const EVENT_T event )
             if( (event == WORD) || (event == CHAR && isThisCharActual(';')))
             {
                FSM_TRANSITION( OUTSIDE_STATE, label = 'No, wasn\'t the header\n'
-                                                      'of a do-function' );
+                                                      'of a do-function',
+                                              color = blue );
                break;
             }
             FSM_TRANSITION( INSIDE_STATE );
@@ -392,7 +394,8 @@ void TransitionFinder::fsmStep( const EVENT_T event )
             {
                if( handleBraceCount() )
                {
-                  FSM_TRANSITION( OUTSIDE_STATE, label = 'End of do-function' );
+                  FSM_TRANSITION( OUTSIDE_STATE, label = 'End of do-function',
+                                                 color = blue );
                   break;
                }
                if( m_braceCount < 0 )
@@ -434,7 +437,7 @@ void TransitionFinder::fsmStep( const EVENT_T event )
                {
                   m_pCurrentTransition = new TransitionGraph( m_pStateGraph );
                   m_isFirstParam = true;
-                  //FIXME Attributes will not read yet exept by a leading ","!
+                  repeatFsmStep = true;
                   FSM_TRANSITION( READ_ATTRIBUTES, label='Is transition-self keyword' );
                   break;
                }
