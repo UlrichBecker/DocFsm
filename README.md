@@ -53,7 +53,12 @@ Example:
    case A_STATE:
    {
       // do something
-      FSM_TRANSITION( A_OTHER_STATE, label='change to the other state' );
+      if( condition )
+      {
+         FSM_TRANSITION( A_OTHER_STATE, label='change to the other state' );
+         break;
+      }
+      FSM_TRANSITION_SELF( label='remain on this state' );
       break;
    }
    ...
