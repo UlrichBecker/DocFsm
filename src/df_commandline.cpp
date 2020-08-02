@@ -36,7 +36,7 @@ int CommandlineParser::OptPrintHelp::onGiven( PARSER* poParser )
                 "finite state machines (FSM) from C and/or C++ sourcefiles.\n\n";
    std::cout << "It translates C/C++ sourcefiles containing a FSM - respectively containing\n"
                 "for the FSM defined macros - into the DOT-language.\n\n";
-   std::cout << "(c) 2017 Ulrich Becker\n\n"; 
+   std::cout << "(c) 2017 - 2020 Ulrich Becker\n\n"; 
    std::cout << "Usage: " << poParser->getProgramName() << " [options,...] <C/C++ sourcefile [C/C++ sourcefile ...]>\n\n";
 
    std::cout << "Example 1: Creating a dot-file from a C sourcefile:\n";

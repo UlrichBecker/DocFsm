@@ -271,20 +271,26 @@ finite state machines (FSM) from C and/or C++ sourcefiles.
 It translates C/C++ sourcefiles containing a FSM - respectively containing
 for the FSM defined macros - into the DOT-language.
 
-(c) 2017 Ulrich Becker
+(c) 2017 - 2020 Ulrich Becker
 
-Usage: docfsm [options,...] <C/C++ sourcefile [C/C++ sourcefile ...]>
+Usage: ./docfsm [options,...] <C/C++ sourcefile [C/C++ sourcefile ...]>
 
 Example 1: Creating a dot-file from a C sourcefile:
-docfsm myFsm.c > myFsm.gv
+./docfsm myFsm.c > myFsm.gv
 
 Example 2: Creating a PDF from a C++11 sourcefile with blue and thick transitions:
-docfsm -E style=bold -E color=blue --std c++11 -I /path/to/my/additional/headers myFsm.cpp | dot -Tpdf -o myFsm.pdf
+./docfsm -E style=bold -E color=blue --std c++11 -I /path/to/my/additional/headers myFsm.cpp | dot -Tpdf -o myFsm.pdf
+
+Example 3: Displaying directly from source file via Image Magick:
+./docfsm myFsm.cpp | display
 
 Options:
 
 -h, --help
         Print this help and exit.
+
+    --generate_doc_tagged
+        GSI specific option will used from GSI-Autodoc only. (www.gsi.de)
 
 -v, --verbose
         Be verbose.
@@ -296,6 +302,11 @@ Options:
         Overwrites the list of state transition keywords by the in PARAM given keyword.
         NOTE: For each new keyword use a separate option-label.
         E.g.: -t FSM_MY_TRANSITION -t FSM_MY_TRANSITION_NEXT ...
+
+-e <PARAM>, --trSelf <PARAM>
+        Overwrites the list of state self-transition keywords by the in PARAM given keyword.
+        NOTE: For each new keyword use a separate option-label.
+        E.g.: -e FSM_MY_TRANSITION_SELF -e FSM_MY_TRANSITION_SELF_NEXT ...
 
 -d <PARAM>, --declare <PARAM>
         Overwrites the list of state deceleration keywords by the in PARAM given keyword.
@@ -394,7 +405,6 @@ Options:
     --lGraph
         List all supported keywords of principal graph attributes and exit.
         Note if the option -v input at first so the short description will also shown.
-
 ```
 TODO
 ----

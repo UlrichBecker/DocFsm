@@ -39,8 +39,8 @@ class TransitionFinder: public KeywordInterpreter
       FSM_DECLARE_STATE( INSIDE_STATE, color=magenta ),
       FSM_DECLARE_STATE( TRANSITION_KEYWORD, color=magenta ),
       FSM_DECLARE_STATE( TRANSITION_ARGUNENTS, color=magenta ),
-      FSM_DECLARE_STATE( READ_KOMMA ),
-      FSM_DECLARE_STATE( READ_ATTRIBUTES )
+      FSM_DECLARE_STATE( READ_KOMMA, color=cyan ),
+      FSM_DECLARE_STATE( READ_ATTRIBUTES, color=cyan )
    };
 
    enum EVENT_T

@@ -21,16 +21,26 @@ using namespace DocFsm;
 
 #ifdef _DEBUG_TRANSITION_FINDER_FSM
    uint g_selfCount = 0;
-   #define FSM_TRANSITION( _newState, attr... )                            \
-   {                                                                       \
+   #define __TR_DEBUG_INFO( _newState ) \
       if( g_selfCount > 0 )                                                \
       {                                                                    \
          std::cerr << g_selfCount << " x" << std::endl;                    \
          g_selfCount = 0;                                                  \
       }                                                                    \
-                                                                           \
       std::cerr << state2str( m_currentState ) << " -> "                   \
-                << state2str( _newState ) << std::endl;                    \
+                << state2str( _newState ) << std::endl;
+
+   
+   #define FSM_TRANSITION( _newState, attr... )                            \
+   {                                                                       \
+      __TR_DEBUG_INFO( _newState )                                         \
+      m_newState = _newState;                                              \
+   }
+
+   #define FSM_TRANSITION_NEXT( _newState, attr... )                       \
+   {                                                                       \
+      __TR_DEBUG_INFO(  _newState )                                        \
+      repeatFsmStep = true;                                                \
       m_newState = _newState;                                              \
    }
 
@@ -43,7 +53,15 @@ using namespace DocFsm;
    }
 
 #else
-   #define FSM_TRANSITION( _newState, attr... ) m_newState = _newState 
+   #define FSM_TRANSITION( _newState, attr... )                            \
+      m_newState = _newState;
+   
+   #define FSM_TRANSITION_NEXT( _newState, attr... )                       \
+   {                                                                       \
+      repeatFsmStep = true;                                                \
+      m_newState = _newState;                                              \
+   }
+ 
    #define FSM_TRANSITION_SELF( attr... )
 #endif
 
@@ -299,7 +317,11 @@ inline void TransitionFinder::startAttributeReaderTransition( ATTR_LIST_T& rAttr
 */
 void TransitionFinder::fsmStep( const EVENT_T event )
 {
+   /*!
+    * @brief Repeat flag becomes set to true in macro FSM_TRANSITION_NEXT.
+    */
    bool repeatFsmStep;
+
    do
    {
       repeatFsmStep = false;
@@ -437,8 +459,7 @@ void TransitionFinder::fsmStep( const EVENT_T event )
                {
                   m_pCurrentTransition = new TransitionGraph( m_pStateGraph );
                   m_isFirstParam = true;
-                  repeatFsmStep = true;
-                  FSM_TRANSITION( READ_ATTRIBUTES, label='Is transition-self keyword' );
+                  FSM_TRANSITION_NEXT( READ_ATTRIBUTES, label='Is transition-self keyword' );
                   break;
                }
             #endif
@@ -447,8 +468,7 @@ void TransitionFinder::fsmStep( const EVENT_T event )
                   if( generateExitState() )
                   {
                      m_isFirstParam = true;
-                     repeatFsmStep = true;
-                     FSM_TRANSITION( READ_ATTRIBUTES, label='or return keyword'  );
+                     FSM_TRANSITION_NEXT( READ_ATTRIBUTES, label='or return keyword'  );
                      break;
                   }
                   break;
@@ -485,22 +505,22 @@ void TransitionFinder::fsmStep( const EVENT_T event )
                break;
             }
             m_pCurrentTransition = new TransitionGraph( poState );
-            FSM_TRANSITION( READ_ATTRIBUTES );
+            FSM_TRANSITION( READ_ATTRIBUTES, color=cyan );
+           // FSM_TRANSITION_NEXT( READ_KOMMA, color=cyan );
             break;
          } // End of case TRANSITION_ARGUNENTS
       //--  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
          case READ_KOMMA:
          {
             assert( dynamic_cast<TransitionGraph*>( m_pCurrentTransition ) != nullptr );
-            if( event != CHAR )
-               break;
+          //  if( event != CHAR )
+          //     break;
             if( isThisCharActual(',') )
             {
-               repeatFsmStep = true;
-               FSM_TRANSITION( READ_ATTRIBUTES );
+               FSM_TRANSITION_NEXT( READ_ATTRIBUTES, color=cyan );
                break;
             }
-            FSM_TRANSITION_SELF();
+            FSM_TRANSITION_SELF(color=cyan);
             break;
          }
       //--  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
@@ -510,26 +530,28 @@ void TransitionFinder::fsmStep( const EVENT_T event )
    
           //  if( event != CHAR )
             //   break;
+
             if( isThisCharActual(')') )
             {
                FSM_TRANSITION( INSIDE_STATE );
                break;
             }
 
-            if( isThisCharActual(',') || m_isFirstParam )
-            {
-            #ifdef _DEBUG_TRANSITION_FINDER_FSM
-               if( m_isFirstParam )
-                  DEBUG_MESSAGE( "m_isFirstParam" );
-            #endif
-               m_isFirstParam = false;
+
+       //     if( isThisCharActual(',') || m_isFirstParam )
+       //     {
+       //     #ifdef _DEBUG_TRANSITION_FINDER_FSM
+       //        if( m_isFirstParam )
+       //           DEBUG_MESSAGE( "m_isFirstParam" );
+       //     #endif
+       //        m_isFirstParam = false;
                startAttributeReaderTransition( m_pCurrentTransition->getAttrList() );
                FSM_TRANSITION( INSIDE_STATE );
                break;
-            }
+         //   }
    
-            FSM_TRANSITION_SELF();
-            break;
+           // FSM_TRANSITION_SELF(color=cyan);
+           // break;
          } // End of case READ_ATTRIBUTES
       }
    
