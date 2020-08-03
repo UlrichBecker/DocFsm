@@ -108,7 +108,6 @@ TransitionFinder::TransitionFinder( StateCollector& rStates,
    ,FSM_INIT_FSM( OUTSIDE_STATE, color=blue, label='Start' )
    ,m_pStateGraph( nullptr )
    ,m_pCurrentTransition( nullptr )
-   ,m_isFirstParam( false )
 {
    rCommandlineparser( m_oOptionNoMerge );
 }
@@ -375,7 +374,7 @@ void TransitionFinder::fsmStep( const EVENT_T event )
                                             color = green );
                break;
             }
-            FSM_TRANSITION_SELF( label= 'test', color = blue ); //!<@todo
+            FSM_TRANSITION_SELF( color = blue );
             break;
          } // End of case OUTSIDE_STATE
       //--  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
@@ -406,7 +405,7 @@ void TransitionFinder::fsmStep( const EVENT_T event )
                                               color = blue );
                break;
             }
-            FSM_TRANSITION( INSIDE_STATE );
+            FSM_TRANSITION( INSIDE_STATE, color=yellow );
             break;
          }
       //--  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
@@ -432,10 +431,11 @@ void TransitionFinder::fsmStep( const EVENT_T event )
             m_transitionType = m_rStates.getKeywords().determineTransitionType( m_sLastWord );
             if( m_transitionType != KeywordPool::NON )
             {
-               FSM_TRANSITION( TRANSITION_KEYWORD, label='FSM-keyword found' );
+               FSM_TRANSITION( TRANSITION_KEYWORD, label='FSM-keyword found',
+                                                   color=magenta );
                break;
             }
-            FSM_TRANSITION_SELF();
+            FSM_TRANSITION_SELF( color=yellow );
             break;
          } // End of case INSIDE_STATE
       //--  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
@@ -443,7 +443,8 @@ void TransitionFinder::fsmStep( const EVENT_T event )
          {
             if( !isThisCharActual('(') )
             {
-               FSM_TRANSITION( INSIDE_STATE );
+               FSM_TRANSITION( INSIDE_STATE, color=yellow,
+                                             label = 'No open braced-character\nfound' );
                break;
             }
             switch( m_transitionType )
@@ -451,15 +452,15 @@ void TransitionFinder::fsmStep( const EVENT_T event )
                case KeywordPool::NON: { assert(false); break; }
                case KeywordPool::TRANSITION:
                {
-                  FSM_TRANSITION ( TRANSITION_ARGUNENTS, label='Is transition keyword' );
+                  FSM_TRANSITION ( TRANSITION_ARGUNENTS, label='Is transition keyword',
+                                                         color=magenta );
                   break;
                }
             #ifdef CONFIG_USE_KEYWORD_TRANSITION_SELF
                case KeywordPool::TRANSITION_SELF:
                {
                   m_pCurrentTransition = new TransitionGraph( m_pStateGraph );
-                  m_isFirstParam = true;
-                  FSM_TRANSITION_NEXT( READ_ATTRIBUTES, label='Is transition-self keyword' );
+                  FSM_TRANSITION_NEXT( READ_ATTRIBUTES, color=cyan, label='Is transition-self keyword' );
                   break;
                }
             #endif
@@ -467,7 +468,6 @@ void TransitionFinder::fsmStep( const EVENT_T event )
                {
                   if( generateExitState() )
                   {
-                     m_isFirstParam = true;
                      FSM_TRANSITION_NEXT( READ_ATTRIBUTES, label='or return keyword'  );
                      break;
                   }
@@ -492,7 +492,7 @@ void TransitionFinder::fsmStep( const EVENT_T event )
                if( isThisCharActual(')') )
                {
                   FSM_TRANSITION( INSIDE_STATE, label='End of argument-list\n'
-                                                      'reached' );
+                                                      'reached', color=yellow );
                   break;
                }
                break;
@@ -501,57 +501,21 @@ void TransitionFinder::fsmStep( const EVENT_T event )
             StateGraph* poState = m_rStates.find( m_sLastWord );
             if( poState == nullptr )
             {
-               FSM_TRANSITION_SELF();
+               FSM_TRANSITION_SELF(color=magenta);
                break;
             }
             m_pCurrentTransition = new TransitionGraph( poState );
             FSM_TRANSITION( READ_ATTRIBUTES, color=cyan );
-           // FSM_TRANSITION_NEXT( READ_KOMMA, color=cyan );
             break;
          } // End of case TRANSITION_ARGUNENTS
-      //--  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
-         case READ_KOMMA:
-         {
-            assert( dynamic_cast<TransitionGraph*>( m_pCurrentTransition ) != nullptr );
-          //  if( event != CHAR )
-          //     break;
-            if( isThisCharActual(',') )
-            {
-               FSM_TRANSITION_NEXT( READ_ATTRIBUTES, color=cyan );
-               break;
-            }
-            FSM_TRANSITION_SELF(color=cyan);
-            break;
-         }
       //--  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
          case READ_ATTRIBUTES:
          {
             assert( dynamic_cast<TransitionGraph*>( m_pCurrentTransition ) != nullptr );
-   
-          //  if( event != CHAR )
-            //   break;
-
-            if( isThisCharActual(')') )
-            {
-               FSM_TRANSITION( INSIDE_STATE );
-               break;
-            }
-
-
-       //     if( isThisCharActual(',') || m_isFirstParam )
-       //     {
-       //     #ifdef _DEBUG_TRANSITION_FINDER_FSM
-       //        if( m_isFirstParam )
-       //           DEBUG_MESSAGE( "m_isFirstParam" );
-       //     #endif
-       //        m_isFirstParam = false;
+            if( !isThisCharActual(')') )
                startAttributeReaderTransition( m_pCurrentTransition->getAttrList() );
-               FSM_TRANSITION( INSIDE_STATE );
-               break;
-         //   }
-   
-           // FSM_TRANSITION_SELF(color=cyan);
-           // break;
+            FSM_TRANSITION( INSIDE_STATE, color=yellow );
+            break;
          } // End of case READ_ATTRIBUTES
       }
    

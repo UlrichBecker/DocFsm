@@ -36,10 +36,10 @@ class TransitionFinder: public KeywordInterpreter
       FSM_DECLARE_STATE( OUTSIDE_STATE, color=blue ),
       FSM_DECLARE_STATE( INSIDE_ENUM, color=green ),
       FSM_DECLARE_STATE( STATE_BEGIN, color=red ),
-      FSM_DECLARE_STATE( INSIDE_STATE, color=magenta ),
+      FSM_DECLARE_STATE( INSIDE_STATE, color=yellow ),
       FSM_DECLARE_STATE( TRANSITION_KEYWORD, color=magenta ),
-      FSM_DECLARE_STATE( TRANSITION_ARGUNENTS, color=magenta ),
-      FSM_DECLARE_STATE( READ_KOMMA, color=cyan ),
+      FSM_DECLARE_STATE( TRANSITION_ARGUNENTS, label='Read target state',
+                                               color=magenta ),
       FSM_DECLARE_STATE( READ_ATTRIBUTES, color=cyan )
    };
 
@@ -70,7 +70,6 @@ class TransitionFinder: public KeywordInterpreter
    StateGraph*         m_pStateGraph;
    TransitionGraph*    m_pCurrentTransition;
    OptionNoMerge       m_oOptionNoMerge;
-   bool                m_isFirstParam;
 
 public:
    TransitionFinder( StateCollector& rStates, CommandlineParser& );
