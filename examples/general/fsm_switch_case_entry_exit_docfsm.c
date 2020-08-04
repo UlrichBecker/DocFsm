@@ -22,6 +22,7 @@ struct FSM_T
 };
 
 #define FSM_TRANSITION( _newState, attr... ) pFsm->newState = _newState
+#define FSM_TRANSITION_SELF( attr... )
 
 void executeFsm( struct FSM_T* pFsm )
 {
@@ -61,9 +62,7 @@ void executeFsm( struct FSM_T* pFsm )
             break;
          }
          (*pMyCounter)--;
-#ifdef __DOCFSM__ /* Following macro isn't really necessary for compiling. */
-         FSM_TRANSITION( TICK, label='counter != 0' );
-#endif
+         FSM_TRANSITION_SELF( TICK, label='counter != 0' );
          break;
       }
 
@@ -76,9 +75,7 @@ void executeFsm( struct FSM_T* pFsm )
             break;
          }
          (*pMyCounter)--;
-#ifdef __DOCFSM__ /* Following macro isn't really necessary for compiling. */
-         FSM_TRANSITION( TACK, label='counter != 0' );
-#endif
+         FSM_TRANSITION_SELF( label='counter != 0' );
          break;
       }
       default: assert( 0 ); break;
