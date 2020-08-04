@@ -456,14 +456,12 @@ void TransitionFinder::fsmStep( const EVENT_T event )
                                                          color=magenta );
                   break;
                }
-            #ifdef CONFIG_USE_KEYWORD_TRANSITION_SELF
                case KeywordPool::TRANSITION_SELF:
                {
                   m_pCurrentTransition = new TransitionGraph( m_pStateGraph );
                   FSM_TRANSITION_NEXT( READ_ATTRIBUTES, color=cyan, label='Is transition-self keyword' );
                   break;
                }
-            #endif
                case KeywordPool::RETURN:
                {
                   if( generateExitState() )

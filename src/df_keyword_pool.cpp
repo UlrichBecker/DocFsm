@@ -37,7 +37,6 @@ int KeywordPool::OverwriteTransition::onGiven( CLOP::PARSER* poParser )
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-#ifdef CONFIG_USE_KEYWORD_TRANSITION_SELF
 /*!----------------------------------------------------------------------------
 */
 KeywordPool::OverwriteTransitionSelf::OverwriteTransitionSelf( KeywordPool* pParent )
@@ -58,7 +57,6 @@ int KeywordPool::OverwriteTransitionSelf::onGiven( CLOP::PARSER* poParser )
     m_pParent->m_vTransitionSelfKeywords.push_back( poParser->getOptArg() );
     return 0;
 }
-#endif //#ifdef CONFIG_USE_KEYWORD_TRANSITION_SELF
 
 ///////////////////////////////////////////////////////////////////////////////
 /*!----------------------------------------------------------------------------
@@ -186,9 +184,7 @@ int KeywordPool::ListKeywords::onGiven( CLOP::PARSER* poParser )
 */
 KeywordPool::KeywordPool( CommandlineParser& rCommandlineParser )
    :m_overwriteTransition( this )
-#ifdef CONFIG_USE_KEYWORD_TRANSITION_SELF
    ,m_overwriteTransitionSelf( this )
-#endif   
    ,m_overwriteDeclare( this )
    ,m_overwriteInitial( this )
    ,m_overwriteCall( this )
@@ -196,9 +192,7 @@ KeywordPool::KeywordPool( CommandlineParser& rCommandlineParser )
    ,m_oListKeywords( this )
 {
    rCommandlineParser( m_overwriteTransition )
-                 #ifdef CONFIG_USE_KEYWORD_TRANSITION_SELF
                      ( m_overwriteTransitionSelf )
-                 #endif
                      ( m_overwriteDeclare )
                      ( m_overwriteInitial )
                      ( m_overwriteCall )
@@ -216,13 +210,11 @@ bool KeywordPool::setDefaultsIfEmpty( void )
       m_vTransitionKeywords.push_back( "FSM_TRANSITION_NEXT" );
    }
    
-#ifdef CONFIG_USE_KEYWORD_TRANSITION_SELF
    if( m_vTransitionSelfKeywords.empty() )
    {
       m_vTransitionSelfKeywords.push_back( "FSM_TRANSITION_SELF" );
       m_vTransitionSelfKeywords.push_back( "FSM_TRANSITION_SELF_NEXT" );
    }
-#endif
 
    if( m_vDeclareKeywords.empty() )
    {
@@ -259,9 +251,7 @@ bool KeywordPool::multipleCheck( void )
    const std::vector<const CONTAINER_T*> allWords =
    {
       &m_vTransitionKeywords,
-   #ifdef CONFIG_USE_KEYWORD_TRANSITION_SELF
       &m_vTransitionSelfKeywords,
-   #endif
       &m_vDeclareKeywords,
       &m_vInitialKeywords,
       &m_vCallKeywords,
@@ -321,10 +311,8 @@ KeywordPool::TYPE_T KeywordPool::determineTransitionType( const std::string& rWo
    if( isOneOfTransitionKeyWords( rWord ) )
       return TRANSITION;
 
-#ifdef CONFIG_USE_KEYWORD_TRANSITION_SELF
    if( isOneOfTransitionSelfKeyWords( rWord ) )
       return TRANSITION_SELF;
-#endif
 
    if( isOneOfReturnKeyWords( rWord ) )
       return RETURN;

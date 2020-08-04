@@ -26,9 +26,7 @@ public:
    {
       NON,
       TRANSITION,
-   #ifdef CONFIG_USE_KEYWORD_TRANSITION_SELF
       TRANSITION_SELF,
-   #endif
       CALL,
       RETURN
    };
@@ -52,14 +50,12 @@ private:
       int onGiven( CLOP::PARSER* poParser ) override;
    };
 
-#ifdef CONFIG_USE_KEYWORD_TRANSITION_SELF
    class OverwriteTransitionSelf: public Option
    {
    public:
       OverwriteTransitionSelf( KeywordPool* );
       int onGiven( CLOP::PARSER* poParser ) override;
    };
-#endif
 
    class OverwriteDeclare: public Option
    {
@@ -97,18 +93,14 @@ private:
    };
 
    CONTAINER_T         m_vTransitionKeywords;
-#ifdef CONFIG_USE_KEYWORD_TRANSITION_SELF
    CONTAINER_T         m_vTransitionSelfKeywords;
-#endif
    CONTAINER_T         m_vDeclareKeywords;
    CONTAINER_T         m_vInitialKeywords;
    CONTAINER_T         m_vCallKeywords;
    CONTAINER_T         m_vReturnKeywords;
 
    OverwriteTransition m_overwriteTransition;
-#ifdef CONFIG_USE_KEYWORD_TRANSITION_SELF
    OverwriteTransitionSelf m_overwriteTransitionSelf;
-#endif
    OverwriteDeclare    m_overwriteDeclare;
    OverwriteInitial    m_overwriteInitial;
    OverwriteCall       m_overwriteCall;
@@ -125,10 +117,8 @@ public:
    void listTransitionKeywords( std::ostream& rOut )
    {
       listKeywords( rOut, m_vTransitionKeywords );
-   #ifdef CONFIG_USE_KEYWORD_TRANSITION_SELF
       rOut << ", ";
       listKeywords( rOut, m_vTransitionSelfKeywords );
-   #endif
    }
 
    void listDeclareKeywords( std::ostream& rOut )
@@ -158,12 +148,10 @@ public:
       return isInList( m_vTransitionKeywords, word );
    }
    
-#ifdef CONFIG_USE_KEYWORD_TRANSITION_SELF
    bool isOneOfTransitionSelfKeyWords( const std::string& word )
    {
       return isInList( m_vTransitionSelfKeywords, word );
    }
-#endif
 
    bool isOneOfDeclareKeyWords( const std::string& word )
    {
