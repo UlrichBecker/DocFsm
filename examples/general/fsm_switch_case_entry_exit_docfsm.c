@@ -62,7 +62,7 @@ void executeFsm( struct FSM_T* pFsm )
             break;
          }
          (*pMyCounter)--;
-         FSM_TRANSITION_SELF( TICK, label='counter != 0' );
+         FSM_TRANSITION_SELF( label='counter != 0' );
          break;
       }
 
