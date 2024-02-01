@@ -29,6 +29,10 @@ If you have ImageMagick installed so you can also display directly form the sour
 ```
 docfsm myFsm.cpp | display
 ```
+If your version of ImageMagick doesn't support the dot-language then try this:
+```
+docfsm myFsm.cpp | dot -Tpng | display
+```
 The following illustration shows the standard process documenting and displaying FSMs:
 ![process DocFsm](./doc/processDocFsm.png)
 
